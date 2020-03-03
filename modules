@@ -1,0 +1,26 @@
+main game engine/loop
+handler
+window
+map
+texture manager
+entity superclass
+creature superclass
+player subclass
+    input
+    targetting
+    inventory
+    hotbar
+    equipped items
+    experience
+    perks
+    skills
+enemy subclass
+    inventory
+    equipped items
+    targetting
+inventory
+items
+quest system
+    reward item/XP
+quest giver
+save system
