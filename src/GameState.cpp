@@ -1,9 +1,17 @@
-#include "GameState.h"
+#include "headers/GameState.h"
+
+GameState::GameState() {
+    map = new Map("res/maps/map1.map");
+}
+
+GameState::~GameState() {
+
+}
 
 void GameState::tick() {
 
 }
 
-void GameState::render(SDL_Renderer* renderer) {
-
+void GameState::render(sf::RenderWindow* window) {
+    map->render(window);
 }

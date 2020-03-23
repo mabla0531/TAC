@@ -1,12 +1,9 @@
 #pragma once
 
-#include <SDL2/SDL.h>
+#include <SFML/Graphics.hpp>
 
 class State {
-    private:
-
-
     public:
     virtual void tick() = 0;
-    virtual void render(SDL_Renderer* renderer) = 0;
+    virtual void render(sf::RenderWindow* window) = 0;
 };
