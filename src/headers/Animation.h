@@ -10,7 +10,7 @@ class Animation {
 
     public:
     Animation();
-    Animation(const char* path, sf::IntRect* textureRects, int frameCount);
+    Animation(sf::Texture* texture, sf::IntRect* textureRects, int frameCount);
     ~Animation();
 
     void cycleFrame();

@@ -1,48 +1,53 @@
 #include "headers/Player.h"
-#include <iostream>
 
-Player::Player(int x, int y) {
+Player::Player(int x, int y) : Creature(x, y) {
 
     sf::IntRect standardRects[4] = {sf::IntRect(32, 0, 32, 32), sf::IntRect(64, 0, 32, 32), sf::IntRect(32, 0, 32, 32), sf::IntRect(0, 0, 32, 32)};
     sf::IntRect upRects[4] = {sf::IntRect(32, 96, 32, 32), sf::IntRect(64, 96, 32, 32), sf::IntRect(32, 96, 32, 32), sf::IntRect(0, 96, 32, 32)};
     sf::IntRect leftRects[4] = {sf::IntRect(32, 32, 32, 32), sf::IntRect(64, 32, 32, 32), sf::IntRect(32, 32, 32, 32), sf::IntRect(0, 32, 32, 32)};
     sf::IntRect rightRects[4] = {sf::IntRect(32, 64, 32, 32), sf::IntRect(64, 64, 32, 32), sf::IntRect(32, 64, 32, 32), sf::IntRect(0, 64, 32, 32)};
-    up = Animation("res/entity.png", upRects, 4);
-    standard = Animation("res/entity.png", standardRects, 4);
-    left = Animation("res/entity.png", leftRects, 4);
-    right = Animation("res/entity.png", rightRects, 4);
+
+    sf::Texture* texture;
+    texture = new sf::Texture();
+
+    texture->loadFromFile("res/entity.png");
+    up = Animation(texture, upRects, 4);
+    standard = Animation(texture, standardRects, 4);
+    left = Animation(texture, leftRects, 4);
+    right = Animation(texture, rightRects, 4);
+    staticSprite = sf::Sprite(*texture, sf::IntRect(32, 0, 32, 32));
     
     currentAnimation = &standard;
 
-    this->x = x;
-    this->y = y;
+    speed = 1.0f;
 }
 
 Player::~Player() {
 
 }
 
-void Player::move(int x, int y) {
-    this->x += x;
-    this->y += y;
-}
-
 void Player::tick() {
-    int xMove = 0, yMove = 0;
+    float xMove = 0.0f, yMove = 0.0f;
     
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+        speed = 1.5f;
+    } else {
+        speed = 1.0f;
+    }
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        yMove--;
+        yMove -= speed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        yMove++;
+        yMove += speed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        xMove--;
+        xMove -= speed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {  
-        xMove++;
+        xMove += speed;
     }
-
+    
     if (yMove != 0 || xMove != 0) moving = true;
     else moving = false;
 
@@ -70,21 +75,4 @@ void Player::tick() {
     
     //finally, move the player
     move(xMove, yMove);
-}
-
-void Player::render(sf::RenderWindow* window, int xCameraOffset, int yCameraOffset) {
-    if (moving)
-        currentAnimation->render(window, x - xCameraOffset, y - yCameraOffset);
-    else {
-        standard.getFrames()[0].setPosition(x - xCameraOffset, y - yCameraOffset);
-        window->draw(standard.getFrames()[0]);
-    }
-}
-
-int Player::getX() {
-    return x;
-}
-
-int Player::getY() {
-    return y;
 }

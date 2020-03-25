@@ -4,11 +4,7 @@ Animation::Animation() {
 
 }
 
-Animation::Animation(const char* path, sf::IntRect* textureRects, int frameCount) {
-    sf::Texture* texture;
-    texture = new sf::Texture();
-
-    texture->loadFromFile(path);
+Animation::Animation(sf::Texture* texture, sf::IntRect* textureRects, int frameCount) {
     spriteFrames = frameCount;
     sprite = new sf::Sprite[spriteFrames];
 
