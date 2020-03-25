@@ -15,5 +15,8 @@ class Player {
 
     void move(int x, int y);
     void tick();
-    void render(sf::RenderWindow* window);
+    void render(sf::RenderWindow* window, int xCameraOffset, int yCameraOffset);
+
+    int getX();
+    int getY();
 };

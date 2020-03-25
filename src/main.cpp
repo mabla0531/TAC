@@ -1,8 +1,8 @@
+#include "headers/definitions.h"
 #include <SFML/Graphics.hpp>
 #include "headers/GameState.h"
-#include <iostream>
 
-sf::RenderWindow window(sf::VideoMode(1280, 720), "The Alpha Chronicles");
+sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "The Alpha Chronicles");
 State* gameState;
 sf::Clock fpsLimiter;
 

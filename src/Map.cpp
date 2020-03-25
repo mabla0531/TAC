@@ -1,5 +1,8 @@
+#include "headers/definitions.h"
+
 #include "headers/Map.h"
 #include <fstream>
+#include <iostream>
 
 Map::Map(const char* path) {
 
@@ -60,10 +63,15 @@ void Map::tick() {
 
 }
 
-void Map::render(sf::RenderWindow* window) {
+void Map::render(sf::RenderWindow* window, int xCameraOffset, int yCameraOffset) {
+    int tileRenderCount = 0;
     for (int i = 0; i < (width * height); i++) {
-        tiles[i].render(window);
+        if (tiles[i].getX() >= xCameraOffset - 32 && tiles[i].getX() <= xCameraOffset + WINDOW_WIDTH && tiles[i].getY() >= yCameraOffset - 32 && tiles[i].getY() <= yCameraOffset + WINDOW_HEIGHT) {
+            tiles[i].render(window, xCameraOffset, yCameraOffset);
+            tileRenderCount++;
+        }
     }
+    std::cout << tileRenderCount << std::endl;
 }
 
 Tile* Map::getTiles() {

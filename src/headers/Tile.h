@@ -23,7 +23,7 @@ class Tile {
     Tile();
     ~Tile();
 
-    void render(sf::RenderWindow* window);
+    void render(sf::RenderWindow* window, int xCameraOffset, int yCameraOffset);
 
     int getX();
     int getY();

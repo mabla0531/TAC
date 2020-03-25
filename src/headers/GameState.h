@@ -10,11 +10,16 @@ class GameState : public State {
     Map* map;
     Player* player;
 
+    int xCameraOffset, yCameraOffset;
+
     public:
     GameState();
     ~GameState();
 
     void tick();
     void render(sf::RenderWindow* window);
+
+    void centerCameraOnPlayer();
+    void trimCameraEdges();
 
 };

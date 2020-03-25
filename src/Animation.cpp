@@ -34,7 +34,7 @@ void Animation::resetFrame() {
     spriteIndex = 0;
 }
 
-void Animation::render(sf::RenderWindow* window,int x, int y) {
+void Animation::render(sf::RenderWindow* window, int x, int y) {
     sprite[spriteIndex].setPosition(x, y);
     window->draw(sprite[spriteIndex]);
 }

@@ -13,7 +13,7 @@ class Map {
     ~Map();
 
     void tick();
-    void render(sf::RenderWindow* window);
+    void render(sf::RenderWindow* window, int xCameraOffset, int yCameraOffset);
 
     Tile* getTiles();
 

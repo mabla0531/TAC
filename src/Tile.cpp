@@ -1,8 +1,8 @@
 #include "headers/Tile.h"
 
 Tile::Tile(int x, int y, Type type, sf::Texture* textureMap) {
-    this->x = x;
-    this->y = y;
+    this->x = x * 32;
+    this->y = y * 32;
 
     sprite = sf::Sprite(*textureMap);
     
@@ -25,7 +25,7 @@ Tile::Tile(int x, int y, Type type, sf::Texture* textureMap) {
     }
 
     sprite.setTextureRect(textureRect);
-    sprite.setPosition(sf::Vector2f(x * 32, y * 32));
+    sprite.setPosition(sf::Vector2f(x, y));
 }
 
 Tile::Tile() {
@@ -36,7 +36,8 @@ Tile::~Tile() {
 
 }
 
-void Tile::render(sf::RenderWindow* window) {
+void Tile::render(sf::RenderWindow* window, int xCameraOffset, int yCameraOffset) {
+    sprite.setPosition(x - xCameraOffset, y - yCameraOffset);
     window->draw(sprite);
 }
 

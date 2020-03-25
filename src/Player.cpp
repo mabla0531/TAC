@@ -65,18 +65,26 @@ void Player::tick() {
 
     if (animationLimiter.getElapsedTime().asMilliseconds() > 200) {
         animationLimiter.restart();
-        currentAnimation->cycleFrame();
+        currentAnimation->cycleFrame(); 
     }
     
     //finally, move the player
     move(xMove, yMove);
 }
 
-void Player::render(sf::RenderWindow* window) {
+void Player::render(sf::RenderWindow* window, int xCameraOffset, int yCameraOffset) {
     if (moving)
-        currentAnimation->render(window, x, y);
+        currentAnimation->render(window, x - xCameraOffset, y - yCameraOffset);
     else {
-        standard.getFrames()[0].setPosition(x, y);
+        standard.getFrames()[0].setPosition(x - xCameraOffset, y - yCameraOffset);
         window->draw(standard.getFrames()[0]);
     }
+}
+
+int Player::getX() {
+    return x;
+}
+
+int Player::getY() {
+    return y;
 }
