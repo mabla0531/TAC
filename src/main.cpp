@@ -4,6 +4,7 @@
 
 sf::RenderWindow window(sf::VideoMode(1280, 720), "The Alpha Chronicles");
 State* gameState;
+sf::Clock fpsLimiter;
 
 void tick() {
 
@@ -14,11 +15,13 @@ void tick() {
         if (event.type == sf::Event::Closed)
             window.close();
     }
+
+    gameState->tick();
 }
 
 void render() {
 
-    //clear window
+    //clear window 
     window.clear();
     
     //render here
@@ -29,12 +32,17 @@ void render() {
 }
 
 int main() {
-
     gameState = new GameState();
 
     while (window.isOpen())
     {
-        tick();
+        //tick 100 times per second
+        if (fpsLimiter.getElapsedTime().asMilliseconds() > 10) {
+            tick();
+            fpsLimiter.restart();
+        }
+
+        //render everything
         render();
     }
 

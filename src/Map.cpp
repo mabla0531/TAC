@@ -53,7 +53,7 @@ Map::Map(const char* path) {
 }
 
 Map::~Map() {
-
+    
 }
 
 void Map::tick() {
