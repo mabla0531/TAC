@@ -15,4 +15,7 @@ class Entity {
 
     virtual void tick() = 0;
     virtual void render(sf::RenderWindow* window, int xCameraOffset, int yCameraOffset) = 0;
+    
+    float getX();
+    float getY();
 };

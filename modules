@@ -1,12 +1,10 @@
-main game engine/loop
-handler
-window
-map
-texture manager
-entity superclass
-creature superclass
-player subclass
-    input
+✓ main game engine/loop
+✓ window
+✓ map
+✓ entity superclass
+✓ creature superclass
+- player subclass
+    ✓ input
     targetting
     inventory
     hotbar

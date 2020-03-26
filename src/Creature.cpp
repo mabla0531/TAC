@@ -13,10 +13,11 @@ Creature::~Creature() {
 }
 
 void Creature::tick() {
-
+    
 }
 
 void Creature::render(sf::RenderWindow* window, int xCameraOffset, int yCameraOffset) {
+    
     if (moving)
         currentAnimation->render(window, x - xCameraOffset, y - yCameraOffset);
     else {
@@ -28,13 +29,4 @@ void Creature::render(sf::RenderWindow* window, int xCameraOffset, int yCameraOf
 void Creature::move(float x, float y) {
     this->x += x;
     this->y += y;
-}
-
-
-float Creature::getX() {
-    return x;
-}
-
-float Creature::getY() {
-    return y;
 }

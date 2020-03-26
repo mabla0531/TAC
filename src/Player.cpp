@@ -1,5 +1,9 @@
 #include "headers/Player.h"
 
+Player::Player() {
+
+}
+
 Player::Player(int x, int y) : Creature(x, y) {
 
     sf::IntRect standardRects[4] = {sf::IntRect(32, 0, 32, 32), sf::IntRect(64, 0, 32, 32), sf::IntRect(32, 0, 32, 32), sf::IntRect(0, 0, 32, 32)};
@@ -16,7 +20,7 @@ Player::Player(int x, int y) : Creature(x, y) {
     left = Animation(texture, leftRects, 4);
     right = Animation(texture, rightRects, 4);
     staticSprite = sf::Sprite(*texture, sf::IntRect(32, 0, 32, 32));
-    
+
     currentAnimation = &standard;
 
     speed = 1.0f;
@@ -27,7 +31,7 @@ Player::~Player() {
 }
 
 void Player::tick() {
-    float xMove = 0.0f, yMove = 0.0f;
+    float xMove = 0, yMove = 0;
     
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
         speed = 1.5f;

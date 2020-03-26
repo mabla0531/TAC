@@ -1,15 +1,15 @@
+#pragma once
 #include "Creature.h"
 
 class Player : public Creature {
     
     private:
-    sf::Clock animationLimiter;
-    Animation standard, up, left, right;
+    Animation up, left, right;
     
     public:
+    Player();
     Player(int x, int y);
     ~Player();
 
     void tick();
-
 };

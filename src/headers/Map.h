@@ -9,6 +9,7 @@ class Map {
     Tile* tiles;
 
     public:
+    Map();
     Map(const char* path);
     ~Map();
 

@@ -6,6 +6,8 @@ class Creature : public Entity {
     protected:
     bool moving;
     float speed;
+    Animation standard;
+    sf::Clock animationLimiter;
 
     public:
     Creature(int x, int y);
@@ -16,8 +18,5 @@ class Creature : public Entity {
     virtual void render(sf::RenderWindow* window, int xCameraOffset, int yCameraOffset);
 
     void move(float x, float y);
-    
-    float getX();
-    float getY();
 
 };
