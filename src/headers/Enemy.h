@@ -13,6 +13,6 @@ class Enemy : public Creature {
     Enemy(int x, int y, Player* player);
     ~Enemy();
 
-    void tick();
+    void tick(std::vector<Entity*>* entities);
 
 };

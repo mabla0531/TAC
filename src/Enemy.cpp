@@ -15,6 +15,7 @@ Enemy::Enemy(int x, int y, Player* player) : Creature(x, y) {
     sf::Texture* texture;
     texture = new sf::Texture();
 
+    //load the texture and animations accordingly
     texture->loadFromFile("res/entity.png");
     up = Animation(texture, upRects, 4);
     standard = Animation(texture, standardRects, 4);
@@ -22,6 +23,7 @@ Enemy::Enemy(int x, int y, Player* player) : Creature(x, y) {
     right = Animation(texture, rightRects, 4);
     staticSprite = sf::Sprite(*texture, sf::IntRect(224, 128, 32, 32));
 
+    //set the current animation to be used to the standard animation (downward-facing)
     currentAnimation = &standard;
 
     this->player = player;
@@ -32,33 +34,44 @@ Enemy::~Enemy() {
 
 }
 
-void Enemy::tick() {
+void Enemy::tick(std::vector<Entity*>* entities) {
+    healthBar.setSize(sf::Vector2f((float)health / (float)maxHealth * 56, 4));
 
     if (player->getX() < x + TILE_SIZE + 100 && player->getX() > x - 100 && player->getY() < y + TILE_SIZE + 100 && player->getY() > y - 100) { //if the player is close
         moving = true;
         float xMove = 0.0f, yMove = 0.0f;
 
         //move towards the player
+                                                                // TODO refactor to use angle based proximity
         if ((int)player->getX() < (int)x) xMove = -speed;
         else if ((int)player->getX() > (int)x) xMove = speed;
     
         if ((int)player->getY() < (int)y) yMove = -speed;
         else if ((int)player->getY() > (int)y) yMove = speed;
 
-        if (yMove < 0) { //if the enemy is moving anywhere up
-            if (currentAnimation != &up) up.resetFrame(); //if the animation is being switched then reset the new animation's frame index
+        //check entity collisions
+        for (int i = 0; i < entities->size(); i++) {
+            if (entities->at(i) != this && checkXCollision(entities->at(i), xMove))
+                xMove = 0.0f;
+            if (entities->at(i) != this && checkYCollision(entities->at(i), yMove))
+                yMove = 0.0f;
+        }
+
+        //tick respective animation
+        if (yMove < 0) {
+            if (currentAnimation != &up) up.resetFrame();
             currentAnimation = &up;
-        } else if (yMove > 0) { //if the enemy is moving anywhere down
-            if (currentAnimation != &standard) standard.resetFrame(); //if the animation is being switched then reset the new animation's frame index
+        } else if (yMove > 0) {
+            if (currentAnimation != &standard) standard.resetFrame();
             currentAnimation = &standard;
-        } else if (xMove < 0 && yMove == 0) { //if the enemy is moving directly left
-            if (currentAnimation != &left) left.resetFrame(); //if the animation is being switched then reset the new animation's frame index
+        } else if (xMove < 0 && yMove == 0) {
+            if (currentAnimation != &left) left.resetFrame();
             currentAnimation = &left;
-        } else if (xMove > 0 && yMove == 0) { //if the enemy is moving directly right
-            if (currentAnimation != &right) right.resetFrame(); //if the animation is being switched then reset the new animation's frame index
+        } else if (xMove > 0 && yMove == 0) {
+            if (currentAnimation != &right) right.resetFrame();
             currentAnimation = &right;
-        } else { //if something messed up but we still need to animate then just use the standard
-            if (currentAnimation != &standard) standard.resetFrame(); //if the animation is being switched then reset the new animation's frame index
+        } else {
+            if (currentAnimation != &standard) standard.resetFrame();
             currentAnimation = &standard;
         }
 

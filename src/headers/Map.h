@@ -20,4 +20,6 @@ class Map {
 
     int getWidth();
     int getHeight();
+
+    
 };

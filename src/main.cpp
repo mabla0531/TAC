@@ -25,14 +25,14 @@ void render() {
     window.clear();
     
     //render here
-    gameState->render(&window);
+    gameState->render();
 
     //display window
     window.display();
 }
 
 int main() {
-    gameState = new GameState();
+    gameState = new GameState(&window);
 
     while (window.isOpen())
     {
