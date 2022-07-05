@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "2Fhb8CbwJatCEg+ffayP/A7aTF08I5WHN95FzlEDJo5u5T/0kKyjfUJUOozzh2GoX89oluSNkbe2l7jNnElbOQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\mabla\\Documents\\C#\\The Alpha Chronicles\\The Alpha Chronicles.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mabla\\.nuget\\packages\\csfml\\2.5.0\\csfml.2.5.0.nupkg.sha512",
+    "C:\\Users\\mabla\\.nuget\\packages\\sfml.audio\\2.5.0\\sfml.audio.2.5.0.nupkg.sha512",
+    "C:\\Users\\mabla\\.nuget\\packages\\sfml.graphics\\2.5.0\\sfml.graphics.2.5.0.nupkg.sha512",
+    "C:\\Users\\mabla\\.nuget\\packages\\sfml.net\\2.5.0\\sfml.net.2.5.0.nupkg.sha512",
+    "C:\\Users\\mabla\\.nuget\\packages\\sfml.system\\2.5.0\\sfml.system.2.5.0.nupkg.sha512",
+    "C:\\Users\\mabla\\.nuget\\packages\\sfml.window\\2.5.0\\sfml.window.2.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}
