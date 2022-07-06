@@ -10,7 +10,6 @@ namespace TAC {
         private Button applyButton;
         private Button cancelButton;
         private Label volumeLabel;
-        private Game game;
         private Sprite menuArt;
         private Sprite settingsBanner;
 
@@ -35,7 +34,7 @@ namespace TAC {
             Volume = float.Parse(lines[0]);
         }
 
-        public SettingsState(Game game) : base() {
+        public SettingsState() : base() {
             load();
 
             volumeSlider = new Slider(new Vector2f(32.0f, 164.0f), 128.0f);
@@ -45,10 +44,10 @@ namespace TAC {
             applyButton = new Button("Apply", new Vector2f((Game.displayWidth / 2) - (Button.WIDTH * 2), Game.displayHeight - 64.0f), 2.0f);
             applyButton.onClick += (sender, e) => {
                 save();
-                game.popState();
+                Handler.game.popState();
             };
             cancelButton = new Button("Cancel", new Vector2f((Game.displayWidth / 2), Game.displayHeight - 64.0f), 2.0f);
-            cancelButton.onClick += (sender, e) => { game.popState(); };
+            cancelButton.onClick += (sender, e) => { Handler.game.popState(); };
             
             menuArt = new Sprite(Assets.menuArt, new IntRect(new Vector2i(0, 0), (Vector2i)Assets.menuArt.Size));
             menuArt.Position = new Vector2f(0.0f, 0.0f);

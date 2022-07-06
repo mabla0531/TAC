@@ -18,6 +18,10 @@ namespace TAC {
         private bool pauseKeyPressed;
 
         private Sprite pauseMenuBG;
+        private Button resume;
+        private Button save;
+        private Button settings;
+        private Button quit;
         
 
         public GameState() : base() {
@@ -34,8 +38,22 @@ namespace TAC {
             paused = false;
             pauseKeyPressed = false;
 
-            pauseMenuBG = new Sprite(Assets.ui, new IntRect(348, 419, 160, 128));
-            pauseMenuBG.Position = new Vector2f((Game.displayWidth / 2) - 80.0f, (Game.displayHeight / 2) - 64.0f);
+            pauseMenuBG = new Sprite(Assets.ui, new IntRect(434, 290, 128, 128));
+            pauseMenuBG.Scale = new Vector2f(2.0f, 2.0f);
+            pauseMenuBG.Position = new Vector2f((Game.displayWidth / 2) - (pauseMenuBG.TextureRect.Width), (Game.displayHeight / 2) - (pauseMenuBG.TextureRect.Height));
+
+            resume =    new Button("Resume",    new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 16.0f), 2.0f);
+            save =      new Button("Save",      new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 75.0f), 2.0f);
+            settings =  new Button("Settings",  new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 133.0f), 2.0f);
+            quit =      new Button("Quit",      new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 192.0f), 2.0f);
+
+            resume.onClick +=   (sender, e) => { paused = false; };
+            save.onClick +=     (sender, e) => { saveGame(); };
+            settings.onClick += (sender, e) => { Handler.game.showSettings(); };
+            quit.onClick +=     (sender, e) => {
+                paused = false;
+                Handler.game.popState();
+            };
         }
 
         public void saveGame() {
@@ -58,6 +76,8 @@ namespace TAC {
                     sw.WriteLine(e.MaxHealth);
                 }
             }
+
+            sw.Close();
         }
 
         public void loadGame() {
@@ -68,23 +88,29 @@ namespace TAC {
             }
 
             lines = new List<string>(File.ReadAllLines("saves/test.tac"));
-            for (int i = 0; i < lines.Count; i++) {
-                if (lines[i] == "[MAP]") {
-                    i++;
-                    map1 = new Map("res/maps/" + lines[i] + ".map");
-                } else if (lines[i] == "[PLAYER]") {
-                    player.X = float.Parse(lines[++i]);
-                    player.Y = float.Parse(lines[++i]);
-                    player.Health = int.Parse(lines[++i]);
-                    player.MaxHealth = int.Parse(lines[++i]);
-                    player.Stamina = float.Parse(lines[++i]);
-                    player.MaxStamina = float.Parse(lines[++i]);
-                } else if (lines[i] == "[ENTITY]") {
-                    HostileMob hm = new HostileMob(float.Parse(lines[++i]), float.Parse(lines[++i]));
-                    hm.Health = int.Parse(lines[++i]);
-                    hm.MaxHealth = int.Parse(lines[++i]);
-                    Entities.Add(hm);
+            
+            try {
+                for (int i = 0; i < lines.Count; i++) {
+                    if (lines[i] == "[MAP]") {
+                        i++;
+                        map1 = new Map("res/maps/" + lines[i] + ".map");
+                    } else if (lines[i] == "[PLAYER]") {
+                        player.X = float.Parse(lines[++i]);
+                        player.Y = float.Parse(lines[++i]);
+                        player.Health = int.Parse(lines[++i]);
+                        player.MaxHealth = int.Parse(lines[++i]);
+                        player.Stamina = float.Parse(lines[++i]);
+                        player.MaxStamina = float.Parse(lines[++i]);
+                    } else if (lines[i] == "[ENTITY]") {
+                        HostileMob hm = new HostileMob(float.Parse(lines[++i]), float.Parse(lines[++i]));
+                        hm.Health = int.Parse(lines[++i]);
+                        hm.MaxHealth = int.Parse(lines[++i]);
+                        Entities.Add(hm);
+                    }
                 }
+            } catch (Exception e) {
+                Console.WriteLine("Save file format is incorrect.");
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -99,8 +125,12 @@ namespace TAC {
                 pauseKeyPressed = false;
 
             if (paused) {
-                //tick pause menu
+                pauseMenuBG.Position = new Vector2f((Game.displayWidth / 2) - (pauseMenuBG.TextureRect.Width), (Game.displayHeight / 2) - (pauseMenuBG.TextureRect.Height));
 
+                resume.tick();
+                save.tick();
+                settings.tick();
+                quit.tick();
                 return;
             }
 
@@ -141,8 +171,11 @@ namespace TAC {
             }
 
             if (paused) {
-                //render pause menu
                 window.Draw(pauseMenuBG);
+                resume.render(window);
+                save.render(window);
+                settings.render(window);
+                quit.render(window);
             }
         }
     }

@@ -41,7 +41,7 @@ namespace TAC {
         }
 
         public void showSettings() {
-            states.Push(new SettingsState(this));
+            states.Push(new SettingsState());
         }
 
         public void popState() {
@@ -114,6 +114,7 @@ namespace TAC {
 
         static void Main(string[] args) {
             Game game = new Game();
+            Handler.game = game;
 
             game.init();
             game.run();

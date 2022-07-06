@@ -449,11 +449,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\mabla\\OneDrive\\Documents\\The Alpha Chronicles\\The Alpha Chronicles.csproj",
+      "projectUniqueName": "C:\\Users\\mabla\\Documents\\TAC\\The Alpha Chronicles.csproj",
       "projectName": "The Alpha Chronicles",
-      "projectPath": "C:\\Users\\mabla\\OneDrive\\Documents\\The Alpha Chronicles\\The Alpha Chronicles.csproj",
+      "projectPath": "C:\\Users\\mabla\\Documents\\TAC\\The Alpha Chronicles.csproj",
       "packagesPath": "C:\\Users\\mabla\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\mabla\\OneDrive\\Documents\\The Alpha Chronicles\\obj\\",
+      "outputPath": "C:\\Users\\mabla\\Documents\\TAC\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\mabla\\AppData\\Roaming\\NuGet\\NuGet.Config"
