@@ -28,6 +28,10 @@ namespace TAC {
 
         private RectangleShape cooldownBarBackground, cooldownBar;
 
+        //Inventory
+        private InventoryInterface inventoryInterface;
+        private bool inventoryKeyPressed = false;
+
         public Player (float x, float y) : base() {
             X = x;
             Y = y;
@@ -71,6 +75,10 @@ namespace TAC {
             cooldownBar.FillColor = new Color(32, 32, 32);
 
             initHUD();
+
+            inventoryInterface = new InventoryInterface(inventory);
+            inventory.addItem(Item.sword);
+            inventory.addItem(Item.axe);
         }
 
         public void initHUD() {
@@ -132,6 +140,14 @@ namespace TAC {
         }
 
         public override void specificTick() {
+
+            if (!inventoryKeyPressed && Keyboard.IsKeyPressed(Keyboard.Key.E)) {
+                inventoryInterface.Active = !inventoryInterface.Active;
+                inventoryKeyPressed = true;
+            }
+
+            if (!Keyboard.IsKeyPressed(Keyboard.Key.E))
+                inventoryKeyPressed = false;
 
             float mouseDeltaX = MouseHandler.MouseX - (X - Handler.gameState.gameCameraOffset.X + 16);
             float mouseDeltaY = MouseHandler.MouseY - (Y - Handler.gameState.gameCameraOffset.Y + 16); //add 16 to get center
@@ -216,6 +232,7 @@ namespace TAC {
             if (elapsed >= attackInterval)
                 cooldownBar.FillColor = new Color(200, 200, 200);
 
+            inventoryInterface.tick();
         }
 
         private void renderHUD(RenderWindow window) {
@@ -261,6 +278,8 @@ namespace TAC {
             window.Draw(cooldownBar);
 
             renderHUD(window);
+
+            inventoryInterface.render(window);
         }
     }
 }

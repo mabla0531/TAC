@@ -20,6 +20,8 @@ namespace TAC {
 
         protected float moveX, moveY;
 
+        protected Inventory inventory;
+
         public ActiveEntity() : base() {
             attackRNG = new Random();
             attackCooldown = new Clock();
@@ -30,6 +32,7 @@ namespace TAC {
             appliedKnockbackY = 0.0f;
             MaxHealth = 10;
             Health = MaxHealth;
+            inventory = new Inventory();
         }
 
         protected void attack(ActiveEntity e) {

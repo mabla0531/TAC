@@ -2,16 +2,20 @@ using System.Collections.Generic;
 
 namespace TAC {
     class Inventory {
-        private List<Item> items;
-        private int money;
+        public List<Item> Items {get; set;}
+        public int money {get; set;}
 
-        public void addItem (Item item) {
-            items.Add(item);
+        public Inventory() {
+            Items = new List<Item>();
+        }
+
+        public void addItem(Item item) {
+            Items.Add(item);
         }
 
         public double getTotalWeight() {
             double weight = 0;
-            foreach (Item i in items) {
+            foreach (Item i in Items) {
                 weight += i.Weight;
             }
 
