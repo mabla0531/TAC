@@ -95,8 +95,14 @@ namespace TAC {
                 running = false;
                 ((Window)sender).Close();
                 }; //add closing event as lambda function
-            window.MouseButtonPressed  += (sender, e) => { if (e.Button == Mouse.Button.Left) MouseHandler.LeftClick = true; };
-            window.MouseButtonReleased += (sender, e) => { if (e.Button == Mouse.Button.Left) MouseHandler.LeftClick = false; };
+            window.MouseButtonPressed += (sender, e) => {
+                if (e.Button == Mouse.Button.Left) MouseHandler.LeftClick = true;
+                if (e.Button == Mouse.Button.Right) MouseHandler.RightClick = true;
+            };
+            window.MouseButtonReleased += (sender, e) => {
+                if (e.Button == Mouse.Button.Left) MouseHandler.LeftClick = false;
+                if (e.Button == Mouse.Button.Right) MouseHandler.RightClick = false;
+            };
 
             window.SetMouseCursor(new Cursor(Assets.cursorData, new Vector2u(12, 17), new Vector2u(0, 0)));
         }

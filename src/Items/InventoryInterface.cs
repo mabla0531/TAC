@@ -1,6 +1,7 @@
 using SFML.Graphics;
 using SFML.System;
 using System;
+using System.Collections.Generic;
 
 namespace TAC {
     class InventoryInterface {
@@ -10,6 +11,9 @@ namespace TAC {
         private Vector2f Position;
         private Sprite inventoryBG;
         private Vector2f[] squarePositions;
+
+        private ContextMenu rightClickMenu;
+        private bool contextTriggered;
 
         public bool Active {get; set;}
         
@@ -28,10 +32,27 @@ namespace TAC {
                     squarePositions[(y * 5) + x] = new Vector2f(((x + 1) * 4) + (x * 32) + inventoryBG.Position.X, ((y + 1) * 4) + (y * 32) + inventoryBG.Position.Y);
                 }
             }
+
+            rightClickMenu = new ContextMenu(new List<ContextButton>(){
+                new ContextButton(new Text("test1", Assets.defaultFont, 16), (sender, e) => {Console.WriteLine("test1");}),
+                new ContextButton(new Text("test2", Assets.defaultFont, 16), (sender, e) => {Console.WriteLine("test2");}),
+            });
+
+            contextTriggered = false;
         }
 
         public void tick() {
-            
+            if (MouseHandler.RightClick && !contextTriggered) {
+                rightClickMenu.X = (int)MouseHandler.MouseX;
+                rightClickMenu.Y = (int)MouseHandler.MouseY;
+                rightClickMenu.Active = !rightClickMenu.Active;
+                contextTriggered = true;
+            }
+
+            if (!MouseHandler.RightClick)
+                contextTriggered = false;
+
+            rightClickMenu.tick();
         }
 
         public void render(RenderWindow window) {
@@ -45,6 +66,8 @@ namespace TAC {
                 currentSprite.Position = squarePositions[i];
                 window.Draw(currentSprite);
             }
+
+            rightClickMenu.render(window);
         }
     }
 }
