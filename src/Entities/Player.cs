@@ -23,7 +23,6 @@ namespace TAC {
         private Sprite healthFill;
         private Sprite staminaFill;
 
-        private float mouseAngle;
         private Sprite sword;
 
         private RectangleShape cooldownBarBackground, cooldownBar;
@@ -36,7 +35,7 @@ namespace TAC {
             X = x;
             Y = y;
 
-            collisionBounds = new FloatRect(6.0f, 8.0f, 20.0f, 22.0f);
+            collisionBounds = new FloatRect(6.0f, 12.0f, 20.0f, 18.0f);
 
             sprite = new Sprite(Assets.player);
             sprite.TextureRect = new IntRect(32, 0, 32, 32);
@@ -79,10 +78,11 @@ namespace TAC {
             inventoryInterface = new InventoryInterface(inventory);
             inventory.addItem(Item.sword);
             inventory.addItem(Item.axe);
+            inventory.addItem(Item.pickaxe);
+            inventory.addItem(Item.shovel);
         }
 
         public void initHUD() {
-            
             hudFrameCornerNW= new Sprite(Assets.ui);
             hudFrameCornerNE= new Sprite(Assets.ui);
             hudFrameCornerSW= new Sprite(Assets.ui);
@@ -140,6 +140,7 @@ namespace TAC {
         }
 
         public override void specificTick() {
+            float mouseAngle;
 
             if (!inventoryKeyPressed && Keyboard.IsKeyPressed(Keyboard.Key.E)) {
                 inventoryInterface.Active = !inventoryInterface.Active;
@@ -208,7 +209,7 @@ namespace TAC {
             float currentEntityAngle;
 
 
-            if (MouseHandler.LeftClick && attackCooldown.ElapsedTime.AsMilliseconds() >= attackInterval) {
+            if (MouseHandler.LeftClick && attackCooldown.ElapsedTime.AsMilliseconds() >= attackInterval && !inventoryInterface.Active) {
                 Assets.swish.Play();
 
                 foreach (ActiveEntity e in Handler.gameState.Entities) {

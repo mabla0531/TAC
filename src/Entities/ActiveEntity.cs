@@ -47,28 +47,27 @@ namespace TAC {
         public abstract void hurt(int damage);
 
         public void checkCollision() {
-            FloatRect absoluteCollisionBounds = getCollisionBounds();
-            absoluteCollisionBounds.Left += moveX;
-            absoluteCollisionBounds.Top  += moveY;
+            FloatRect collisionBounds = getCollisionBounds();
+            FloatRect movingCollisionBounds = collisionBounds;
+            movingCollisionBounds.Left += moveX; //offset moving collision bounds by movement variables
+            movingCollisionBounds.Top  += moveY;
             foreach (Entity e in Handler.gameState.Entities) {
-                if (e == this)
-                    continue;
-                if (e.getCollisionBounds().Intersects(absoluteCollisionBounds)) {
+                if (e != this && e.getCollisionBounds().Intersects(movingCollisionBounds)) {
                     moveX = 0.0f;
                     moveY = 0.0f;
                 }
             }
 
-            if (((GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(X - curSpeed), (int)(Y))) || 
-                  GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(X - curSpeed), (int)(Y + 32)))) && moveX < 0.0f) || 
-                ((GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(X + 32 + curSpeed), (int)(Y))) || 
-                  GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(X + 32 + curSpeed), (int)(Y + 32)))) && moveX > 0.0f)) {
+            if (((GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(movingCollisionBounds.Left), (int)(collisionBounds.Top))) || 
+                  GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(movingCollisionBounds.Left), (int)(collisionBounds.Top + collisionBounds.Height)))) && moveX < 0.0f) || 
+                ((GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(movingCollisionBounds.Left + collisionBounds.Width), (int)(collisionBounds.Top))) || 
+                  GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(movingCollisionBounds.Left + collisionBounds.Width), (int)(collisionBounds.Top + collisionBounds.Height)))) && moveX > 0.0f)) {
                 moveX = 0.0f;
             }
-            if (((GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(X), (int)(Y - curSpeed))) || 
-                  GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(X + 32), (int)(Y - curSpeed)))) && moveY < 0.0f) ||
-                ((GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(X), (int)(Y + 32 + curSpeed))) || 
-                  GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(X + 32), (int)(Y + 32 + curSpeed)))) && moveY > 0.0f)) {
+            if (((GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(collisionBounds.Left), (int)(movingCollisionBounds.Top))) || 
+                  GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(collisionBounds.Left + collisionBounds.Width), (int)(movingCollisionBounds.Top)))) && moveY < 0.0f) ||
+                ((GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(collisionBounds.Left), (int)(movingCollisionBounds.Top + collisionBounds.Height))) || 
+                  GameState.currentMap.solidTiles.Contains(GameState.currentMap.getTileByCoords((int)(collisionBounds.Left + collisionBounds.Width), (int)(movingCollisionBounds.Top + collisionBounds.Height)))) && moveY > 0.0f)) {
                 moveY = 0.0f;
             }
         }

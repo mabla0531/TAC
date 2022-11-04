@@ -7,67 +7,82 @@ namespace TAC {
     class InventoryInterface {
         
         private Inventory inventory;
-
         private Vector2f Position;
         private Sprite inventoryBG;
-        private Vector2f[] squarePositions;
+        private int index;
 
-        private ContextMenu rightClickMenu;
-        private bool contextTriggered;
+        private ScrollBar scrollBar;
 
         public bool Active {get; set;}
-        
-        public InventoryInterface(Inventory i) {
-            inventory = i;
 
-            inventoryBG = new Sprite(Assets.ui, new IntRect(192, 292, 184, 184));
-            inventoryBG.Scale = new Vector2f(1.0f, 1.0f);
-            inventoryBG.Position = new Vector2f((Game.displayWidth / 2) - (inventoryBG.TextureRect.Width / 2), (Game.displayHeight / 2) - (inventoryBG.TextureRect.Height / 2));
+        private Text itemLabel;
+        private RectangleShape highlight;
+
+        public InventoryInterface(Inventory inv) {
+            inventory = inv;
+
+            inventoryBG = new Sprite(Assets.ui, new IntRect(434, 290, 128, 128));
+            inventoryBG.Scale = new Vector2f(2.0f, 2.0f);
+            inventoryBG.Position = new Vector2f((Game.displayWidth / 2) - (inventoryBG.TextureRect.Width), (Game.displayHeight / 2) - (inventoryBG.TextureRect.Height));
+
+            scrollBar = new ScrollBar(74, new Vector2f(inventoryBG.Position.X + (inventoryBG.TextureRect.Width * inventoryBG.Scale.X) - 22, inventoryBG.Position.Y + 24));
 
             Active = false;
 
-            squarePositions = new Vector2f[25];
-            for (int y = 0; y < 5; y++) {
-                for (int x = 0; x < 5; x++) {
-                    squarePositions[(y * 5) + x] = new Vector2f(((x + 1) * 4) + (x * 32) + inventoryBG.Position.X, ((y + 1) * 4) + (y * 32) + inventoryBG.Position.Y);
-                }
-            }
+            itemLabel = new Text("", Assets.defaultFont);
+            itemLabel.CharacterSize = 20;
 
-            rightClickMenu = new ContextMenu(new List<ContextButton>(){
-                new ContextButton(new Text("test1", Assets.defaultFont, 16), (sender, e) => {Console.WriteLine("test1");}),
-                new ContextButton(new Text("test2", Assets.defaultFont, 16), (sender, e) => {Console.WriteLine("test2");}),
-            });
-
-            contextTriggered = false;
+            highlight = new RectangleShape(new Vector2f(231.0f, 20.0f));
+            highlight.FillColor = new Color(56, 56, 56);
+            highlight.OutlineColor = new Color(128, 128, 128);
+            highlight.OutlineThickness = 1.0f;
         }
 
         public void tick() {
-            if (MouseHandler.RightClick && !contextTriggered) {
-                rightClickMenu.X = (int)MouseHandler.MouseX;
-                rightClickMenu.Y = (int)MouseHandler.MouseY;
-                rightClickMenu.Active = !rightClickMenu.Active;
-                contextTriggered = true;
+            
+            if (!Active) //escape clause for non active inventory
+                return;
+            
+
+            if (MouseHandler.WheelMove != 0) {
+                index -= MouseHandler.WheelMove; //mouse wheel int direction is flipped from index, so -=
+                MouseHandler.WheelMove = 0;
             }
 
-            if (!MouseHandler.RightClick)
-                contextTriggered = false;
+            //maintain constraints of index
+            if (index < 0) index = 0;
+            if (index >= inventory.Items.Count) index = inventory.Items.Count - 1;
 
-            rightClickMenu.tick();
+            //update scrollbar position
+            scrollBar.ScrollPosition = ((float)index / (float)(inventory.Items.Count - 1)) * (float)(scrollBar.Height - 8);
+            scrollBar.UpArrowShowing   = true;
+            scrollBar.DownArrowShowing = true;
+            if (index - 2 <= 0) scrollBar.UpArrowShowing = false;
+            if (index + 2 >= inventory.Items.Count - 1) scrollBar.DownArrowShowing = false;
         }
 
-        public void render(RenderWindow window) {
+            public void render(RenderWindow window) {
             if (!Active) return;
             
+            inventoryBG.Position = new Vector2f((Game.displayWidth / 2) - (inventoryBG.TextureRect.Width), (Game.displayHeight / 2) - (inventoryBG.TextureRect.Height));
             window.Draw(inventoryBG);
-            Sprite currentSprite;
-            for (int i = 0; i < inventory.Items.Count; i++) {
-                currentSprite = new Sprite(inventory.Items[i].Icon);
-                currentSprite.Scale = new Vector2f(2.0f, 2.0f);
-                currentSprite.Position = squarePositions[i];
-                window.Draw(currentSprite);
-            }
+            highlight.Position = new Vector2f(inventoryBG.Position.X + 13, inventoryBG.Position.Y + 52);
+            window.Draw(highlight);
 
-            rightClickMenu.render(window);
+            scrollBar.Position = new Vector2f(inventoryBG.Position.X + (inventoryBG.TextureRect.Width * inventoryBG.Scale.X) - 22, inventoryBG.Position.Y + 24);
+            scrollBar.render(window);
+
+            int offset = -40;
+            for (int i = index - 2; i <= index + 2; i++) {
+                if (i >= 0 && i < inventory.Items.Count) {    
+                    itemLabel.DisplayedString = inventory.Items[i].Name;
+                    itemLabel.Position = new Vector2f(inventoryBG.Position.X + 16, inventoryBG.Position.Y + 50 + offset);
+                    
+                    window.Draw(itemLabel);
+                }
+
+                offset += 20;
+            }
         }
     }
 }

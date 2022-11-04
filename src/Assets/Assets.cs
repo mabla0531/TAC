@@ -48,16 +48,16 @@ namespace TAC {
             cursorSprite.TextureRect = new IntRect(168, 128, 12, 17);
             cursor.Draw(cursorSprite);
             cursor.Display(); //why is this a thing
-            cursorData = cursor.Texture.CopyToImage().Pixels;
+            cursorData = cursor.Texture.CopyToImage().Pixels; //hahaha the cursor has to be a pixel array instead of like maybe A SPRITE
 
             slice = new Sound(new SoundBuffer("res/sounds/knifeSlice.ogg"));
-            slice.Volume = SettingsState.Volume;
+            slice.Volume = SettingsState.Volume * 100.0f;
             walk  = new Sound(new SoundBuffer("res/sounds/leaves01.ogg"));
-            walk.Volume = SettingsState.Volume;
+            walk.Volume = SettingsState.Volume * 100.0f;
             swish = new Sound(new SoundBuffer("res/sounds/swish-4.wav"));
-            swish.Volume = SettingsState.Volume;
+            swish.Volume = SettingsState.Volume * 100.0f;
             grrr  = new Sound(new SoundBuffer("res/sounds/monster-4.wav"));
-            grrr.Volume = SettingsState.Volume / 2;
+            grrr.Volume = SettingsState.Volume * 50.0f; //grrr is really loud, halve it
 
             defaultFont = new Font("res/fonts/default.ttf");
         }

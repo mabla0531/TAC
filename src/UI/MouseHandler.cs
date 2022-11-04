@@ -8,5 +8,6 @@ namespace TAC {
 
         public static bool LeftClick {get; set;}
         public static bool RightClick {get; set;}
+        public static int WheelMove {get; set;}
     }
 }

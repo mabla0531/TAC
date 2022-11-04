@@ -103,6 +103,10 @@ namespace TAC {
                 if (e.Button == Mouse.Button.Left) MouseHandler.LeftClick = false;
                 if (e.Button == Mouse.Button.Right) MouseHandler.RightClick = false;
             };
+            window.MouseWheelScrolled += (sender, e) => {
+                if (e.Delta < 0.0) MouseHandler.WheelMove = -1;
+                if (e.Delta > 0.0) MouseHandler.WheelMove =  1;
+            };
 
             window.SetMouseCursor(new Cursor(Assets.cursorData, new Vector2u(12, 17), new Vector2u(0, 0)));
         }

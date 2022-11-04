@@ -30,6 +30,7 @@ namespace TAC {
             player = new Player(200.0f, 200.0f);
             Entities = new List<Entity>();
             Entities.Add(player);
+            Entities.Add(new HostileMob(200.0f, 200.0f));
             gameCameraOffset = new Vector2i(0, 0);
 
             player.X = 500.0f;
@@ -125,8 +126,6 @@ namespace TAC {
                 pauseKeyPressed = false;
 
             if (paused) {
-                pauseMenuBG.Position = new Vector2f((Game.displayWidth / 2) - (pauseMenuBG.TextureRect.Width), (Game.displayHeight / 2) - (pauseMenuBG.TextureRect.Height));
-
                 resume.tick();
                 save.tick();
                 settings.tick();
@@ -171,7 +170,13 @@ namespace TAC {
             }
 
             if (paused) {
+                pauseMenuBG.Position = new Vector2f((Game.displayWidth / 2) - (pauseMenuBG.TextureRect.Width), (Game.displayHeight / 2) - (pauseMenuBG.TextureRect.Height));
                 window.Draw(pauseMenuBG);
+
+                resume.Position     = new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 16.0f);
+                save.Position       = new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 75.0f);
+                settings.Position   = new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 133.0f);
+                quit.Position       = new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 192.0f);
                 resume.render(window);
                 save.render(window);
                 settings.render(window);

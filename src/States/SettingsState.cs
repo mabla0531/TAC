@@ -55,9 +55,7 @@ namespace TAC {
             settingsBanner = new Sprite(Assets.settings, new IntRect(new Vector2i(0, 0), (Vector2i)Assets.settings.Size));
             settingsBanner.Position = new Vector2f((Game.displayWidth / 2) - (Assets.settings.Size.X / 2), 32.0f);
 
-            
         }
-
 
         public override void tick() {
             volumeSlider.tick();
