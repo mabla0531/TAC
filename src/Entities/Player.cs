@@ -14,15 +14,7 @@ namespace TAC {
         private float staminaDecaySpeed = 0.5f, staminaRegenSpeed = 1.0f;
         private bool cooldown = false;
 
-        //HUD objects
-        private Sprite hudFrameCornerNW, hudFrameCornerNE, hudFrameCornerSW, hudFrameCornerSE, 
-                       hudFrameEdgeN, hudFrameEdgeS, hudFrameEdgeW, hudFrameEdgeE, hudFrameMiddle;
-
-        //healthbar objects
-        private Sprite statBarL, statBar, statBarR;
-        private Sprite healthFill;
-        private Sprite staminaFill;
-
+        //player addons
         private Sprite sword;
 
         private RectangleShape cooldownBarBackground, cooldownBar;
@@ -30,6 +22,13 @@ namespace TAC {
         //Inventory
         private InventoryInterface inventoryInterface;
         private bool inventoryKeyPressed = false;
+
+        public Item Head {get; set;}
+        public Item Chest {get; set;}
+        public Item Legs {get; set;}
+        public Item Feet {get; set;}
+        public Item Offhand {get; set;}
+        public Item Hand {get; set;}
 
         public Player (float x, float y) : base() {
             X = x;
@@ -64,7 +63,7 @@ namespace TAC {
 
             MaxHealth = 10;
             Health = 10;
-            displayHealth = (float)Health;
+            DisplayHealth = (float)Health;
 
             attackAlpha = 1;
 
@@ -73,66 +72,11 @@ namespace TAC {
             cooldownBar = new RectangleShape(new Vector2f(16, 2));
             cooldownBar.FillColor = new Color(32, 32, 32);
 
-            initHUD();
-
-            inventoryInterface = new InventoryInterface(inventory);
+            inventoryInterface = new InventoryInterface(this);
             inventory.addItem(Item.sword);
             inventory.addItem(Item.axe);
             inventory.addItem(Item.pickaxe);
             inventory.addItem(Item.shovel);
-        }
-
-        public void initHUD() {
-            hudFrameCornerNW= new Sprite(Assets.ui);
-            hudFrameCornerNE= new Sprite(Assets.ui);
-            hudFrameCornerSW= new Sprite(Assets.ui);
-            hudFrameCornerSE= new Sprite(Assets.ui);
-            hudFrameEdgeN   = new Sprite(Assets.ui);
-            hudFrameEdgeS   = new Sprite(Assets.ui);
-            hudFrameEdgeW   = new Sprite(Assets.ui);
-            hudFrameEdgeE   = new Sprite(Assets.ui);
-            hudFrameMiddle  = new Sprite(Assets.ui);
-
-            statBarL     = new Sprite(Assets.ui);
-            statBar      = new Sprite(Assets.ui);
-            statBarR     = new Sprite(Assets.ui);
-            healthFill   = new Sprite(Assets.ui);
-            staminaFill  = new Sprite(Assets.ui);
-
-            hudFrameCornerNW.TextureRect= new IntRect(16,  40, 32, 32);
-            hudFrameCornerNE.TextureRect= new IntRect(82,  40, 32, 32);
-            hudFrameCornerSW.TextureRect= new IntRect(478, 80, 32, 32);
-            hudFrameCornerSE.TextureRect= new IntRect(544, 80, 32, 32);
-            hudFrameEdgeN.TextureRect   = new IntRect(49,  40, 32, 32);
-            hudFrameEdgeS.TextureRect   = new IntRect(511, 80, 32, 32);
-            hudFrameEdgeW.TextureRect   = new IntRect(478, 24, 32, 32);
-            hudFrameEdgeE.TextureRect   = new IntRect(544, 24, 32, 32);
-            hudFrameMiddle.TextureRect  = new IntRect(511, 24, 32, 32);
-            hudFrameCornerNW.Position   = new Vector2f(0, Game.displayHeight - 128);
-            hudFrameCornerNE.Position   = new Vector2f(Game.displayWidth - 32, Game.displayHeight - 128);
-            hudFrameCornerSW.Position   = new Vector2f(0, Game.displayHeight - 32);
-            hudFrameCornerSE.Position   = new Vector2f(Game.displayWidth - 32, Game.displayHeight - 32);
-            hudFrameEdgeN.Position      = new Vector2f(32, Game.displayHeight - 128);
-            hudFrameEdgeN.Scale         = new Vector2f((Game.displayWidth / 32) - 2, 1.0f);
-            hudFrameEdgeS.Position      = new Vector2f(32, Game.displayHeight - 32);
-            hudFrameEdgeS.Scale         = new Vector2f((Game.displayWidth / 32) - 2, 1.0f);
-            hudFrameEdgeE.Position      = new Vector2f(Game.displayWidth - 32, Game.displayHeight - 96);
-            hudFrameEdgeE.Scale         = new Vector2f(1.0f, 2.0f);
-            hudFrameEdgeW.Position      = new Vector2f(0, Game.displayHeight - 96);
-            hudFrameEdgeW.Scale         = new Vector2f(1.0f, 2.0f);
-            hudFrameMiddle.Position     = new Vector2f(32, Game.displayHeight - 96);
-            hudFrameMiddle.Scale        = new Vector2f((Game.displayWidth / 32) - 2, 2.0f);
-
-            statBarL.TextureRect        = new IntRect(258, 38, 24, 24);
-            statBar.TextureRect         = new IntRect(283, 38, 24, 24);
-            statBarR.TextureRect        = new IntRect(308, 38, 24, 24);
-            statBar.Scale               = new Vector2f(2.5f, 1.0f);
-            healthFill.TextureRect      = new IntRect(349, 39, 8, 16);
-            healthFill.Position         = new Vector2f(17,  Game.displayHeight - 116);
-            healthFill.Scale            = new Vector2f(10.0f * (displayHealth / (float)MaxHealth), 1.0f);
-            staminaFill.TextureRect     = new IntRect(349, 72, 8, 16);
-            staminaFill.Position        = new Vector2f(17,  Game.displayHeight - 91);
-            staminaFill.Scale           = new Vector2f(10.0f * (Stamina / (float)MaxStamina), 1.0f);
         }
 
         public override void hurt(int damage) {
@@ -155,10 +99,6 @@ namespace TAC {
 
             mouseAngle = (float)Math.Atan2(mouseDeltaY, mouseDeltaX);
             sword.Rotation = (float)((mouseAngle * (180 / Math.PI)) - 45.0f);
-
-            if (displayHealth > Health) {
-                displayHealth -= 0.1f;
-            }
             
             doKnockback();
 
@@ -236,39 +176,6 @@ namespace TAC {
             inventoryInterface.tick();
         }
 
-        private void renderHUD(RenderWindow window) {
-            window.Draw(hudFrameMiddle);
-            window.Draw(hudFrameEdgeN);
-            window.Draw(hudFrameEdgeS);
-            window.Draw(hudFrameEdgeW);
-            window.Draw(hudFrameEdgeE);
-            window.Draw(hudFrameCornerNW);
-            window.Draw(hudFrameCornerNE);
-            window.Draw(hudFrameCornerSW);
-            window.Draw(hudFrameCornerSE);
-
-            //draw in position of health bar
-            statBarL.Position   = new Vector2f(8,  Game.displayHeight - 120);
-            statBar.Position    = new Vector2f(28, Game.displayHeight - 120);
-            statBarR.Position   = new Vector2f(82, Game.displayHeight - 120);
-            window.Draw(statBarL);
-            window.Draw(statBar);
-            window.Draw(statBarR);
-
-            //draw in position of stamina bar
-            statBarL.Position   = new Vector2f(8,  Game.displayHeight - 96);
-            statBar.Position    = new Vector2f(28, Game.displayHeight - 96);
-            statBarR.Position   = new Vector2f(82, Game.displayHeight - 96);
-            window.Draw(statBarL);
-            window.Draw(statBar);
-            window.Draw(statBarR);
-
-            healthFill.Scale = new Vector2f(10.0f * (displayHealth / (float)MaxHealth), 1.0f);
-            window.Draw(healthFill);
-            staminaFill.Scale = new Vector2f(10.0f * (Stamina / (float)MaxStamina), 1.0f);
-            window.Draw(staminaFill);
-        }
-
         public override void specificRender(RenderWindow window) {
             sword.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X + 16.0f, Y - Handler.gameState.gameCameraOffset.Y + 20.0f);
             window.Draw(sword);
@@ -277,8 +184,6 @@ namespace TAC {
             cooldownBar.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X + 9, Y - Handler.gameState.gameCameraOffset.Y + 35);
             window.Draw(cooldownBarBackground);
             window.Draw(cooldownBar);
-
-            renderHUD(window);
 
             inventoryInterface.render(window);
         }

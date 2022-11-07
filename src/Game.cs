@@ -17,6 +17,7 @@ namespace TAC {
         private bool enterPressed = false;
 
         private RenderWindow window;
+        private Cursor defaultCursor;
         private Clock tickLimiter;
 
         private GameState gameState;
@@ -28,6 +29,8 @@ namespace TAC {
         }
 
         private void tick() {
+            if (new IntRect(0, 0, (int)displayWidth, (int)displayHeight).Contains((int)MouseHandler.MouseX, (int)MouseHandler.MouseY))
+                window.SetMouseCursor(new Cursor(Assets.cursorData, new Vector2u(12, 17), new Vector2u(0, 0))); //for some reason when the cursor leaves the window it doesn't change back always
             states.Peek().tick(); //tick the top state
         }
 
@@ -66,7 +69,7 @@ namespace TAC {
                         SettingsState.Fullscreen = !SettingsState.Fullscreen; //flip fullscreen flag
                         window.Dispose();
                         initDisplay();
-                        gameState.player.initHUD();
+                        gameState.initHUD();
                     }
 
                     if (!Keyboard.IsKeyPressed(Keyboard.Key.Enter))
@@ -108,12 +111,13 @@ namespace TAC {
                 if (e.Delta > 0.0) MouseHandler.WheelMove =  1;
             };
 
-            window.SetMouseCursor(new Cursor(Assets.cursorData, new Vector2u(12, 17), new Vector2u(0, 0)));
+            window.SetMouseCursor(defaultCursor);
         }
 
         private void init() {
             SettingsState.load();
             Assets.init();
+            defaultCursor = new Cursor(Assets.cursorData, new Vector2u(12, 17), new Vector2u(0, 0));
             initDisplay();
             gameState = new GameState();
             Handler.gameState = gameState;

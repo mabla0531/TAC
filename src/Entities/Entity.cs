@@ -10,7 +10,7 @@ namespace TAC {
 
         public int MaxHealth {get; set;}
         public int Health {get; set;}
-        protected float displayHealth;
+        public float DisplayHealth {get; set;}
 
         protected Sprite sprite;
 

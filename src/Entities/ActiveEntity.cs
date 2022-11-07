@@ -20,7 +20,7 @@ namespace TAC {
 
         protected float moveX, moveY;
 
-        protected Inventory inventory;
+        public Inventory inventory {get; set;} //I would love to capitalize it, I really would, but unfortunately my hands are tied
 
         public ActiveEntity() : base() {
             attackRNG = new Random();

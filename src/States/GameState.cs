@@ -14,7 +14,7 @@ namespace TAC {
         public Player player {get; set;}
         public List<Entity> Entities {get; set; }
         public Vector2i gameCameraOffset; 
-        private bool paused;
+        public bool Paused {get; set;}
         private bool pauseKeyPressed;
 
         private Sprite pauseMenuBG;
@@ -22,6 +22,18 @@ namespace TAC {
         private Button save;
         private Button settings;
         private Button quit;
+        
+        //HUD objects
+        private Sprite hudFrameCornerNW, hudFrameCornerNE, hudFrameCornerSW, hudFrameCornerSE, 
+                       hudFrameEdgeN, hudFrameEdgeS, hudFrameEdgeW, hudFrameEdgeE, hudFrameMiddle;
+        
+        //equipment objects
+        private Sprite handSlot;
+
+        //healthbar objects
+        private Sprite statBarL, statBar, statBarR;
+        private Sprite healthFill;
+        private Sprite staminaFill;
         
 
         public GameState() : base() {
@@ -36,7 +48,7 @@ namespace TAC {
             player.X = 500.0f;
             player.Y = 500.0f;
 
-            paused = false;
+            Paused = false;
             pauseKeyPressed = false;
 
             pauseMenuBG = new Sprite(Assets.ui, new IntRect(434, 290, 128, 128));
@@ -48,13 +60,115 @@ namespace TAC {
             settings =  new Button("Settings",  new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 133.0f), 2.0f);
             quit =      new Button("Quit",      new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 192.0f), 2.0f);
 
-            resume.onClick +=   (sender, e) => { paused = false; };
+            resume.onClick +=   (sender, e) => { Paused = false; };
             save.onClick +=     (sender, e) => { saveGame(); };
             settings.onClick += (sender, e) => { Handler.game.showSettings(); };
             quit.onClick +=     (sender, e) => {
-                paused = false;
+                Paused = false;
                 Handler.game.popState();
             };
+
+            initHUD();
+        }
+
+        public void initHUD() {
+            hudFrameCornerNW = new Sprite(Assets.ui);
+            hudFrameCornerNE = new Sprite(Assets.ui);
+            hudFrameCornerSW = new Sprite(Assets.ui);
+            hudFrameCornerSE = new Sprite(Assets.ui);
+            hudFrameEdgeN    = new Sprite(Assets.ui);
+            hudFrameEdgeS    = new Sprite(Assets.ui);
+            hudFrameEdgeW    = new Sprite(Assets.ui);
+            hudFrameEdgeE    = new Sprite(Assets.ui);
+            hudFrameMiddle   = new Sprite(Assets.ui);
+
+            statBarL     = new Sprite(Assets.ui);
+            statBar      = new Sprite(Assets.ui);
+            statBarR     = new Sprite(Assets.ui);
+            healthFill   = new Sprite(Assets.ui);
+            staminaFill  = new Sprite(Assets.ui);
+
+            hudFrameCornerNW.TextureRect = new IntRect(16,  40, 32, 32);
+            hudFrameCornerNE.TextureRect = new IntRect(82,  40, 32, 32);
+            hudFrameCornerSW.TextureRect = new IntRect(478, 80, 32, 32);
+            hudFrameCornerSE.TextureRect = new IntRect(544, 80, 32, 32);
+            hudFrameEdgeN.TextureRect    = new IntRect(49,  40, 32, 32);
+            hudFrameEdgeS.TextureRect    = new IntRect(511, 80, 32, 32);
+            hudFrameEdgeW.TextureRect    = new IntRect(478, 24, 32, 32);
+            hudFrameEdgeE.TextureRect    = new IntRect(544, 24, 32, 32);
+            hudFrameMiddle.TextureRect   = new IntRect(511, 24, 32, 32);
+            statBarL.TextureRect         = new IntRect(258, 38, 24, 24);
+            statBar.TextureRect          = new IntRect(283, 38, 24, 24);
+            statBarR.TextureRect         = new IntRect(308, 38, 24, 24);
+            staminaFill.TextureRect      = new IntRect(349, 71, 8, 16);
+            healthFill.TextureRect       = new IntRect(349, 39, 8, 16);
+
+            hudFrameCornerNW.Position    = new Vector2f(0, Game.displayHeight - 128);
+            hudFrameCornerNE.Position    = new Vector2f(Game.displayWidth - 32, Game.displayHeight - 128);
+            hudFrameCornerSW.Position    = new Vector2f(0, Game.displayHeight - 32);
+            hudFrameCornerSE.Position    = new Vector2f(Game.displayWidth - 32, Game.displayHeight - 32);
+            hudFrameEdgeN.Position       = new Vector2f(32, Game.displayHeight - 128);
+            hudFrameEdgeN.Scale          = new Vector2f((Game.displayWidth / 32) - 2, 1.0f);
+            hudFrameEdgeS.Position       = new Vector2f(32, Game.displayHeight - 32);
+            hudFrameEdgeS.Scale          = new Vector2f((Game.displayWidth / 32) - 2, 1.0f);
+            hudFrameEdgeE.Position       = new Vector2f(Game.displayWidth - 32, Game.displayHeight - 96);
+            hudFrameEdgeE.Scale          = new Vector2f(1.0f, 2.0f);
+            hudFrameEdgeW.Position       = new Vector2f(0, Game.displayHeight - 96);
+            hudFrameEdgeW.Scale          = new Vector2f(1.0f, 2.0f);
+            hudFrameMiddle.Position      = new Vector2f(32, Game.displayHeight - 96);
+            hudFrameMiddle.Scale         = new Vector2f((Game.displayWidth / 32) - 2, 2.0f);
+            statBarL.Scale               = new Vector2f(1.5f, 1.5f);
+            statBarR.Scale               = new Vector2f(1.5f, 1.5f);
+            statBar.Scale                = new Vector2f(4.0f, 1.5f);
+            healthFill.Scale             = new Vector2f(15.0f * (player.DisplayHealth / (float)player.MaxHealth), 1.5f);
+            staminaFill.Scale            = new Vector2f(15.0f * (player.Stamina / (float)player.MaxStamina), 1.5f);
+        }
+
+        private void renderHUD(RenderWindow window) {
+            window.Draw(hudFrameMiddle);
+            window.Draw(hudFrameEdgeN);
+            window.Draw(hudFrameEdgeS);
+            window.Draw(hudFrameEdgeW);
+            window.Draw(hudFrameEdgeE);
+            window.Draw(hudFrameCornerNW);
+            window.Draw(hudFrameCornerNE);
+            window.Draw(hudFrameCornerSW);
+            window.Draw(hudFrameCornerSE);
+
+            //draw in position of health bar
+            statBarL.Position   = new Vector2f(8,  Game.displayHeight - 120);
+            statBar.Position    = new Vector2f(44, Game.displayHeight - 120);
+            statBarR.Position   = new Vector2f(118, Game.displayHeight - 120);
+            window.Draw(statBarL);
+            window.Draw(statBar);
+            window.Draw(statBarR);
+
+            //draw in position of stamina bar
+            statBarL.Position   = new Vector2f(8,  Game.displayHeight - 84);
+            statBar.Position    = new Vector2f(44, Game.displayHeight - 84);
+            statBarR.Position   = new Vector2f(118, Game.displayHeight - 84);
+            window.Draw(statBarL);
+            window.Draw(statBar);
+            window.Draw(statBarR);
+
+            if (player.DisplayHealth > player.Health) {
+                player.DisplayHealth -= 0.01f;
+                Console.WriteLine(player.DisplayHealth);
+            }
+            
+            healthFill.Position = new Vector2f(21,  Game.displayHeight - 114);
+            healthFill.Scale = new Vector2f(15.0f * (player.DisplayHealth / (float)player.MaxHealth), 1.5f);
+            window.Draw(healthFill);
+            staminaFill.Position = new Vector2f(21,  Game.displayHeight - 78);
+            staminaFill.Scale = new Vector2f(15.0f * (player.Stamina / (float)player.MaxStamina), 1.5f);
+            window.Draw(staminaFill);
+
+            if (player.Hand != null) {
+                handSlot = player.Hand.Icon;
+                handSlot.Scale = new Vector2f(3.0f, 3.0f);
+                handSlot.Position = new Vector2f(Game.displayWidth - 70,  Game.displayHeight - 84);
+                window.Draw(handSlot);
+            }
         }
 
         public void saveGame() {
@@ -119,13 +233,13 @@ namespace TAC {
             
             if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) && !pauseKeyPressed) {
                 pauseKeyPressed = true;
-                paused = !paused;
+                Paused = !Paused;
             }
 
             if (!Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                 pauseKeyPressed = false;
 
-            if (paused) {
+            if (Paused) {
                 resume.tick();
                 save.tick();
                 settings.tick();
@@ -160,6 +274,7 @@ namespace TAC {
             foreach (Entity e in entitiesToRemove) {
                 Entities.Remove(e);
             }
+            
         }
 
         public override void render(RenderWindow window) {
@@ -169,7 +284,7 @@ namespace TAC {
                 e.render(window);
             }
 
-            if (paused) {
+            if (Paused) {
                 pauseMenuBG.Position = new Vector2f((Game.displayWidth / 2) - (pauseMenuBG.TextureRect.Width), (Game.displayHeight / 2) - (pauseMenuBG.TextureRect.Height));
                 window.Draw(pauseMenuBG);
 
@@ -182,6 +297,8 @@ namespace TAC {
                 settings.render(window);
                 quit.render(window);
             }
+
+            renderHUD(window);
         }
     }
 }
