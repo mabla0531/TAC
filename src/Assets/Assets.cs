@@ -1,4 +1,5 @@
 using SFML.Graphics;
+using SFML.System;
 using SFML.Audio;
 
 namespace TAC {
@@ -15,6 +16,9 @@ namespace TAC {
         public static Texture logo;
         public static Texture settings;
         public static byte[] cursorData;
+
+        //Shaders
+        public static Shader gaussianBlur;
 
         //Audio
         public static Sound slice;
@@ -49,6 +53,8 @@ namespace TAC {
             cursor.Draw(cursorSprite);
             cursor.Display(); //why is this a thing
             cursorData = cursor.Texture.CopyToImage().Pixels; //hahaha the cursor has to be a pixel array instead of like maybe A SPRITE
+
+            gaussianBlur = new Shader(null, null, "res/shaders/gaussian.frag");
 
             slice = new Sound(new SoundBuffer("res/sounds/knifeSlice.ogg"));
             slice.Volume = SettingsState.Volume * 100.0f;

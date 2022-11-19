@@ -7,11 +7,10 @@ namespace TAC {
 
         public Text drawText {get; set;}
         public Vector2f Position {get; set;}
-        public float Scale {get; set;}
-        public const int WIDTH = 72;
-        private Sprite sprite;
-        private Sprite pressedSprite;
+        public Vector2f Size {get; set;}
         private bool pressed;
+
+        private RectangleShape buttonRect;
 
         public event EventHandler onClick;
 
@@ -19,22 +18,19 @@ namespace TAC {
 
         }
 
-        public Button(string text, Vector2f position, float scale) {
+        public Button(string text, Vector2f position) {
             Position = position;
-            Scale = scale;
+            Size = new Vector2f(128.0f, 42.0f);
 
             drawText = new Text(text, Assets.defaultFont);
-            drawText.Position = new Vector2f(position.X + (10 * Scale), position.Y + (5 * Scale) + 1);
-            drawText.FillColor = Color.Black;
+            drawText.Position = new Vector2f(Position.X + 12, Position.Y + 8);
+            drawText.FillColor = new Color(200, 200, 200);
             drawText.LetterSpacing = 1;
-            drawText.CharacterSize = (uint)(10 * Scale);
+            drawText.CharacterSize = 20;
 
-            sprite = new Sprite(Assets.ui, new IntRect(634, 118, 72, 24));
-            sprite.Position = position;
-            sprite.Scale = new Vector2f(Scale, Scale);
-            pressedSprite = new Sprite(Assets.ui, new IntRect(634, 143, 72, 24));
-            pressedSprite.Position = position;
-            pressedSprite.Scale = new Vector2f(Scale, Scale);
+            buttonRect = new RectangleShape(Size);
+            buttonRect.FillColor = new Color(80, 80, 80);
+            buttonRect.Position = position;
 
             pressed = false;
         }
@@ -46,16 +42,20 @@ namespace TAC {
             }
 
             pressed = false;
-            if (MouseHandler.LeftClick && new IntRect((Vector2i)Position, new Vector2i(144, 48)).Contains((int)MouseHandler.MouseX, (int)MouseHandler.MouseY))
-                pressed = true;
 
-            sprite.Position = Position;
-            pressedSprite.Position = Position;
-            drawText.Position = (pressed ? new Vector2f(Position.X + (10 * Scale) + 1, Position.Y + (5 * Scale) + 2) : new Vector2f(Position.X + (10 * Scale), Position.Y + (5 * Scale) + 1));
+            buttonRect.FillColor = new Color(80, 80, 80);
+            if (new IntRect((Vector2i)Position, (Vector2i)Size).Contains((int)MouseHandler.MouseX, (int)MouseHandler.MouseY)) {
+                buttonRect.FillColor = new Color(100, 100, 100);
+                if (MouseHandler.LeftClick)
+                    pressed = true;
+            }
+
+            buttonRect.Position = Position;
+            drawText.Position = new Vector2f(Position.X + 12, Position.Y + 8);
         }
 
         public void render(RenderWindow window) {
-            window.Draw((pressed ? pressedSprite : sprite));
+            window.Draw(buttonRect);
             window.Draw(drawText);
         }
     }

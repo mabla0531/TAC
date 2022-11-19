@@ -41,12 +41,12 @@ namespace TAC {
             volumeSlider.Fill = (Volume * volumeSlider.MaxFill);
             volumeLabel = new Label("Volume:" + (int)(Volume * 100), new Vector2f(32.0f, 128.0f), 64.0f);
             
-            applyButton = new Button("Apply", new Vector2f((Game.displayWidth / 2) - (Button.WIDTH * 2), Game.displayHeight - 64.0f), 2.0f);
+            applyButton = new Button("Apply", new Vector2f((Game.displayWidth / 2) - 128.0f, Game.displayHeight - 64.0f));
             applyButton.onClick += (sender, e) => {
                 save();
                 Handler.game.popState();
             };
-            cancelButton = new Button("Cancel", new Vector2f((Game.displayWidth / 2), Game.displayHeight - 64.0f), 2.0f);
+            cancelButton = new Button("Cancel", new Vector2f((Game.displayWidth / 2), Game.displayHeight - 64.0f));
             cancelButton.onClick += (sender, e) => { Handler.game.popState(); };
             
             menuArt = new Sprite(Assets.menuArt, new IntRect(new Vector2i(0, 0), (Vector2i)Assets.menuArt.Size));
@@ -63,7 +63,7 @@ namespace TAC {
             volumeLabel.drawText.DisplayedString = "Volume:" + (int)(Volume * 100);
             Assets.updateVolume(Volume * 100.0f);
 
-            applyButton.Position = new Vector2f((Game.displayWidth / 2) - (Button.WIDTH * 2), Game.displayHeight - 64.0f);
+            applyButton.Position = new Vector2f((Game.displayWidth / 2) - 128.0f, Game.displayHeight - 64.0f);
             cancelButton.Position = new Vector2f((Game.displayWidth / 2), Game.displayHeight - 64.0f);
             applyButton.tick();
             cancelButton.tick();

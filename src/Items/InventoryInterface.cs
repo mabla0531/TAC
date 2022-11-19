@@ -5,7 +5,8 @@ namespace TAC {
     class InventoryInterface {
         
         private Player player;
-        private Sprite inventoryBG;
+        private RectangleShape inventoryBG;
+        private GaussianBlur gaussianBlur;
         private Sprite currentItem;
         private int index;
 
@@ -24,11 +25,12 @@ namespace TAC {
         public InventoryInterface(Player p) {
             player = p;
 
-            inventoryBG = new Sprite(Assets.ui, new IntRect(434, 290, 128, 128));
-            inventoryBG.Scale = new Vector2f(2.0f, 2.0f);
-            inventoryBG.Position = new Vector2f((Game.displayWidth / 2) - (inventoryBG.TextureRect.Width), (Game.displayHeight / 2) - (inventoryBG.TextureRect.Height));
+            inventoryBG = new RectangleShape(new Vector2f(256.0f, 256.0f));
+            inventoryBG.FillColor = new Color(50, 80, 100, 200);
+            inventoryBG.Position = new Vector2f((Game.displayWidth / 2) - (inventoryBG.Size.X / 2), (Game.displayHeight / 2) - (inventoryBG.Size.Y));
+            gaussianBlur = new GaussianBlur((int)inventoryBG.Size.X, (int)inventoryBG.Size.Y);
 
-            scrollBar = new ScrollBar(74, new Vector2f(inventoryBG.Position.X + (inventoryBG.TextureRect.Width * inventoryBG.Scale.X) - 22, inventoryBG.Position.Y + 24));
+            scrollBar = new ScrollBar(74, new Vector2f(inventoryBG.Position.X + (inventoryBG.Size.X) - 22, inventoryBG.Position.Y + 24));
 
             Active = false;
 
@@ -51,7 +53,7 @@ namespace TAC {
             itemHighlight.OutlineColor = new Color(128, 128, 128);
             itemHighlight.OutlineThickness = 1.0f;
 
-            equipButton = new Button("Equip", new Vector2f(inventoryBG.Position.X + 106, inventoryBG.Position.Y + 202), 2.0f);
+            equipButton = new Button("Equip", new Vector2f(inventoryBG.Position.X + 106, inventoryBG.Position.Y + 202));
             
             equipButton.onClick += (sender, e) => {
                 Item i = player.inventory.Items[index];
@@ -99,13 +101,16 @@ namespace TAC {
 
         public void render(RenderWindow window) {
             if (!Active) return;
-            
-            inventoryBG.Position = new Vector2f((Game.displayWidth / 2) - (inventoryBG.TextureRect.Width), (Game.displayHeight / 2) - (inventoryBG.TextureRect.Height));
+
+
+            inventoryBG.Position = new Vector2f((Game.displayWidth / 2) - (inventoryBG.Size.X / 2), (Game.displayHeight / 2) - (inventoryBG.Size.Y));
+            gaussianBlur.blurArea((int)inventoryBG.Position.X, (int)inventoryBG.Position.Y, window);
             window.Draw(inventoryBG);
+            
             highlight.Position = new Vector2f(inventoryBG.Position.X + 13, inventoryBG.Position.Y + 52);
             window.Draw(highlight);
 
-            scrollBar.Position = new Vector2f(inventoryBG.Position.X + (inventoryBG.TextureRect.Width * inventoryBG.Scale.X) - 22, inventoryBG.Position.Y + 24);
+            scrollBar.Position = new Vector2f(inventoryBG.Position.X + (inventoryBG.Size.X) - 22, inventoryBG.Position.Y + 24);
             scrollBar.render(window);
 
             int offset = -40;
@@ -141,13 +146,13 @@ namespace TAC {
             itemName.OutlineThickness = 1.0f;
 
             itemName.FillColor = item.ItemRarity switch {
-                Item.Rarity.Unique => new Color(181, 27, 140),
+                Item.Rarity.Unique    => new Color(181, 27, 140),
                 Item.Rarity.Legendary => new Color(103, 47, 156),
-                Item.Rarity.Epic => new Color(26, 74, 196),
-                Item.Rarity.Uncommon => new Color(51, 196, 26),
-                Item.Rarity.Common => new Color(133, 133, 133),
-                Item.Rarity.Useless => new Color(97, 60, 23),
-                _ => new Color(97, 60, 23)
+                Item.Rarity.Epic      => new Color(26, 74, 196),
+                Item.Rarity.Uncommon  => new Color(51, 196, 26),
+                Item.Rarity.Common    => new Color(133, 133, 133),
+                Item.Rarity.Useless   => new Color(97, 60, 23),
+                                    _ => new Color(97, 60, 23)
             };
 
             window.Draw(itemName);

@@ -55,10 +55,10 @@ namespace TAC {
             pauseMenuBG.Scale = new Vector2f(2.0f, 2.0f);
             pauseMenuBG.Position = new Vector2f((Game.displayWidth / 2) - (pauseMenuBG.TextureRect.Width), (Game.displayHeight / 2) - (pauseMenuBG.TextureRect.Height));
 
-            resume =    new Button("Resume",    new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 16.0f), 2.0f);
-            save =      new Button("Save",      new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 75.0f), 2.0f);
-            settings =  new Button("Settings",  new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 133.0f), 2.0f);
-            quit =      new Button("Quit",      new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 192.0f), 2.0f);
+            resume =    new Button("Resume",    new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 16.0f));
+            save =      new Button("Save",      new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 75.0f));
+            settings =  new Button("Settings",  new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 133.0f));
+            quit =      new Button("Quit",      new Vector2f(pauseMenuBG.Position.X + 56.0f, pauseMenuBG.Position.Y + 192.0f));
 
             resume.onClick +=   (sender, e) => { Paused = false; };
             save.onClick +=     (sender, e) => { saveGame(); };
@@ -153,7 +153,6 @@ namespace TAC {
 
             if (player.DisplayHealth > player.Health) {
                 player.DisplayHealth -= 0.01f;
-                Console.WriteLine(player.DisplayHealth);
             }
             
             healthFill.Position = new Vector2f(21,  Game.displayHeight - 114);

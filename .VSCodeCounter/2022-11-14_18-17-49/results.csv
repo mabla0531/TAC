@@ -1,0 +1,42 @@
+"filename", "language", "XML", "C#", "JSON", "Properties", "comment", "blank", "total"
+"c:\Users\mabla\Documents\TAC\The Alpha Chronicles.csproj", "XML", 10, 0, 0, 0, 0, 4, 14
+"c:\Users\mabla\Documents\TAC\bin\Debug\net5.0\The Alpha Chronicles.deps.json", "JSON", 0, 0, 420, 0, 0, 0, 420
+"c:\Users\mabla\Documents\TAC\bin\Debug\net5.0\The Alpha Chronicles.runtimeconfig.dev.json", "JSON", 0, 0, 8, 0, 0, 0, 8
+"c:\Users\mabla\Documents\TAC\bin\Debug\net5.0\The Alpha Chronicles.runtimeconfig.json", "JSON", 0, 0, 9, 0, 0, 0, 9
+"c:\Users\mabla\Documents\TAC\bin\Debug\net6.0\The Alpha Chronicles.deps.json", "JSON", 0, 0, 420, 0, 0, 0, 420
+"c:\Users\mabla\Documents\TAC\bin\Debug\net6.0\The Alpha Chronicles.runtimeconfig.json", "JSON", 0, 0, 9, 0, 0, 0, 9
+"c:\Users\mabla\Documents\TAC\bin\Debug\net6.0\publish\The Alpha Chronicles.deps.json", "JSON", 0, 0, 420, 0, 0, 0, 420
+"c:\Users\mabla\Documents\TAC\bin\Debug\net6.0\publish\The Alpha Chronicles.runtimeconfig.json", "JSON", 0, 0, 9, 0, 0, 0, 9
+"c:\Users\mabla\Documents\TAC\obj\Debug\net5.0\.NETCoreApp,Version=v5.0.AssemblyAttributes.cs", "C#", 0, 3, 0, 0, 1, 1, 5
+"c:\Users\mabla\Documents\TAC\obj\Debug\net5.0\The Alpha Chronicles.AssemblyInfo.cs", "C#", 0, 9, 0, 0, 9, 5, 23
+"c:\Users\mabla\Documents\TAC\obj\Debug\net5.0\The Alpha Chronicles.GeneratedMSBuildEditorConfig.editorconfig", "Properties", 0, 0, 0, 10, 0, 1, 11
+"c:\Users\mabla\Documents\TAC\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs", "C#", 0, 3, 0, 0, 1, 1, 5
+"c:\Users\mabla\Documents\TAC\obj\Debug\net6.0\The Alpha Chronicles.AssemblyInfo.cs", "C#", 0, 9, 0, 0, 9, 5, 23
+"c:\Users\mabla\Documents\TAC\obj\Debug\net6.0\The Alpha Chronicles.GeneratedMSBuildEditorConfig.editorconfig", "Properties", 0, 0, 0, 10, 0, 1, 11
+"c:\Users\mabla\Documents\TAC\obj\The Alpha Chronicles.csproj.nuget.dgspec.json", "JSON", 0, 0, 66, 0, 0, 0, 66
+"c:\Users\mabla\Documents\TAC\obj\The Alpha Chronicles.csproj.nuget.g.props", "XML", 15, 0, 0, 0, 0, 0, 15
+"c:\Users\mabla\Documents\TAC\obj\The Alpha Chronicles.csproj.nuget.g.targets", "XML", 2, 0, 0, 0, 0, 0, 2
+"c:\Users\mabla\Documents\TAC\obj\project.assets.json", "JSON", 0, 0, 507, 0, 0, 0, 507
+"c:\Users\mabla\Documents\TAC\src\Assets\Assets.cs", "C#", 0, 61, 0, 0, 4, 11, 76
+"c:\Users\mabla\Documents\TAC\src\Entities\ActiveEntity.cs", "C#", 0, 113, 0, 0, 0, 24, 137
+"c:\Users\mabla\Documents\TAC\src\Entities\Entity.cs", "C#", 0, 20, 0, 0, 0, 9, 29
+"c:\Users\mabla\Documents\TAC\src\Entities\HostileMob.cs", "C#", 0, 72, 0, 0, 2, 21, 95
+"c:\Users\mabla\Documents\TAC\src\Entities\Player.cs", "C#", 0, 147, 0, 0, 3, 42, 192
+"c:\Users\mabla\Documents\TAC\src\Game.cs", "C#", 0, 109, 0, 0, 2, 29, 140
+"c:\Users\mabla\Documents\TAC\src\Handler.cs", "C#", 0, 6, 0, 0, 0, 1, 7
+"c:\Users\mabla\Documents\TAC\src\Items\Inventory.cs", "C#", 0, 20, 0, 0, 0, 6, 26
+"c:\Users\mabla\Documents\TAC\src\Items\InventoryInterface.cs", "C#", 0, 118, 0, 0, 2, 40, 160
+"c:\Users\mabla\Documents\TAC\src\Items\Item.cs", "C#", 0, 45, 0, 0, 0, 7, 52
+"c:\Users\mabla\Documents\TAC\src\Items\Sword.cs", "C#", 0, 0, 0, 0, 0, 1, 1
+"c:\Users\mabla\Documents\TAC\src\Map.cs", "C#", 0, 165, 0, 0, 39, 17, 221
+"c:\Users\mabla\Documents\TAC\src\States\GameState.cs", "C#", 0, 251, 0, 0, 6, 47, 304
+"c:\Users\mabla\Documents\TAC\src\States\MainMenuState.cs", "C#", 0, 58, 0, 0, 0, 14, 72
+"c:\Users\mabla\Documents\TAC\src\States\SettingsState.cs", "C#", 0, 68, 0, 0, 0, 19, 87
+"c:\Users\mabla\Documents\TAC\src\States\State.cs", "C#", 0, 9, 0, 0, 0, 5, 14
+"c:\Users\mabla\Documents\TAC\src\UI\Button.cs", "C#", 0, 49, 0, 0, 0, 13, 62
+"c:\Users\mabla\Documents\TAC\src\UI\CheckBox.cs", "C#", 0, 42, 0, 0, 0, 9, 51
+"c:\Users\mabla\Documents\TAC\src\UI\Label.cs", "C#", 0, 39, 0, 0, 0, 11, 50
+"c:\Users\mabla\Documents\TAC\src\UI\MouseHandler.cs", "C#", 0, 9, 0, 0, 1, 3, 13
+"c:\Users\mabla\Documents\TAC\src\UI\ScrollBar.cs", "C#", 0, 43, 0, 0, 0, 15, 58
+"c:\Users\mabla\Documents\TAC\src\UI\Slider.cs", "C#", 0, 44, 0, 0, 0, 11, 55
+"Total", "-", 27, 1512, 1868, 20, 79, 373, 3879
