@@ -28,8 +28,11 @@ namespace TAC {
             }
 
             public void blurArea(int x, int y, RenderWindow window) {
-            //Start shader buffering
-
+                
+                if (windowContent.Size.X != Game.displayWidth || windowContent.Size.Y != Game.displayHeight)
+                    windowContent = new Texture(Game.displayWidth, Game.displayHeight);
+                
+                //Start shader buffering
                 windowContent.Update(window);
                 blurContent = new Sprite(windowContent, new IntRect(x, y, width, height));
                 blurContent.Position = new Vector2f(0.0f, 0.0f);

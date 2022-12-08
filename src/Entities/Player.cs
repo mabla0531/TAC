@@ -6,12 +6,12 @@ using SFML.Window;
 namespace TAC {
 
     class Player : ActiveEntity {
-        private float walkSpeed = 1.0f, runSpeed = 2.0f;
+        private float walkSpeed = 1.5f, runSpeed = 2.5f;
 
         //running stuff
-        public float Stamina {get; set;} = 200.0f;
-        public float MaxStamina {get; set;} = 200.0f;
-        private float staminaDecaySpeed = 0.5f, staminaRegenSpeed = 1.0f;
+        public float Stamina {get; set;} = 100.0f;
+        public float MaxStamina {get; set;} = 100.0f;
+        private float staminaDecaySpeed = 0.5f;
         private bool cooldown = false;
 
         //player addons
@@ -140,8 +140,10 @@ namespace TAC {
                 animFrameInterTime = 150;
                 Stamina -= staminaDecaySpeed;
             } else if (Stamina < MaxStamina) {
-                Stamina += staminaRegenSpeed;
+                Stamina += (MaxStamina / 200.0f);
+                if (Stamina > MaxStamina) Stamina = MaxStamina;
             }
+
 
             tickAnimation();
 

@@ -210,7 +210,7 @@ namespace TAC {
         public void render(RenderWindow window, Vector2i gameCameraOffset) {
             for (int y = 0; y < Height; y++) {
                 for (int x = 0; x < Width; x++) {
-                    if ((x * 32) - gameCameraOffset.X > -32 && (x * 32) - gameCameraOffset.X < Game.displayWidth && (y * 32) - gameCameraOffset.Y > -32 && (y * 32) - gameCameraOffset.Y < Game.displayHeight - 128) {
+                    if ((x * 32) - gameCameraOffset.X > -32 && (x * 32) - gameCameraOffset.X < Game.displayWidth && (y * 32) - gameCameraOffset.Y > -32 && (y * 32) - gameCameraOffset.Y < Game.displayHeight) {
                         tiles[tileMap[y, x]].Position = new Vector2f((x * 32) - gameCameraOffset.X, (y * 32) - gameCameraOffset.Y);
                         window.Draw(tiles[tileMap[y, x]]);
                     }

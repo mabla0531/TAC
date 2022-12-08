@@ -30,7 +30,7 @@ namespace TAC {
 
         private void tick() {
             if (new IntRect(0, 0, (int)displayWidth, (int)displayHeight).Contains((int)MouseHandler.MouseX, (int)MouseHandler.MouseY) && window.HasFocus())
-                window.SetMouseCursor(new Cursor(Assets.cursorData, new Vector2u(12, 17), new Vector2u(0, 0))); //for some reason when the cursor leaves the window it doesn't change back always
+                window.SetMouseCursor(defaultCursor); //for some reason when the cursor leaves the window it doesn't change back always
             states.Peek().tick(); //tick the top state
         }
 
@@ -69,7 +69,6 @@ namespace TAC {
                         SettingsState.Fullscreen = !SettingsState.Fullscreen; //flip fullscreen flag
                         window.Dispose();
                         initDisplay();
-                        gameState.initHUD();
                     }
 
                     if (!Keyboard.IsKeyPressed(Keyboard.Key.Enter))

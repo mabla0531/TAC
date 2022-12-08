@@ -17,25 +17,25 @@ namespace TAC {
         public MainMenuState(Game game) {
             this.game = game;
 
-            startButton = new Button("Start", new Vector2f(64.0f, 192.0f));
+            startButton = new Button("Start", new Vector2f(64.0f, 192.0f), true);
             startButton.onClick += (sender, e) => {
                 Console.WriteLine("Start");
                 game.startGame();
             };
 
-            loadButton = new Button("Load", new Vector2f(64.0f, 256.0f));
+            loadButton = new Button("Load", new Vector2f(64.0f, 256.0f), true);
             loadButton.onClick += (sender, e) => {
                 Console.WriteLine("Load");
                 game.loadGame();
             };
 
-            settingsButton = new Button("Settings", new Vector2f(64.0f, 320.0f));
+            settingsButton = new Button("Settings", new Vector2f(64.0f, 320.0f), true);
             settingsButton.onClick += (sender, e) => {
                 Console.WriteLine("Settings");
                 game.showSettings();
             };
 
-            exitButton = new Button("Exit", new Vector2f(64.0f, 384.0f));
+            exitButton = new Button("Exit", new Vector2f(64.0f, 384.0f), true);
             exitButton.onClick += (sender, e) => {
                 Console.WriteLine("Exit");
                 game.stop();
