@@ -1,5 +1,4 @@
 using SFML.Graphics;
-using SFML.System;
 using SFML.Audio;
 
 namespace TAC {
@@ -25,15 +24,19 @@ namespace TAC {
         public static Sound walk;
         public static Sound swish;
         public static Sound grrr;
+        public static Sound click;
+        public static Sound hover;
 
         //Font
         public static Font defaultFont;
 
         public static void updateVolume(float volume) {
             slice.Volume = volume;
-            walk.Volume = volume;
+            walk.Volume  = volume;
             swish.Volume = volume;
-            grrr.Volume = volume / 2;
+            grrr.Volume  = volume;
+            click.Volume = volume;
+            hover.Volume = volume;
         }
 
         public static void init() { //bit schewpid, init()? 
@@ -52,18 +55,22 @@ namespace TAC {
             cursorSprite.TextureRect = new IntRect(168, 128, 12, 17);
             cursor.Draw(cursorSprite);
             cursor.Display(); //why is this a thing
-            cursorData = cursor.Texture.CopyToImage().Pixels; //hahaha the cursor has to be a pixel array instead of like maybe A SPRITE
+            cursorData = cursor.Texture.CopyToImage().Pixels; //hahaha the cursor has to be a pixel array instead of like maybe a sprite
 
             gaussianBlur = new Shader(null, null, "res/shaders/gaussian.frag");
 
             slice = new Sound(new SoundBuffer("res/sounds/knifeSlice.ogg"));
             slice.Volume = SettingsState.Volume * 100.0f;
             walk  = new Sound(new SoundBuffer("res/sounds/leaves01.ogg"));
-            walk.Volume = SettingsState.Volume * 100.0f;
+            walk.Volume =  SettingsState.Volume * 100.0f;
             swish = new Sound(new SoundBuffer("res/sounds/swish-4.wav"));
             swish.Volume = SettingsState.Volume * 100.0f;
             grrr  = new Sound(new SoundBuffer("res/sounds/monster-4.wav"));
-            grrr.Volume = SettingsState.Volume * 50.0f; //grrr is really loud, halve it
+            grrr.Volume =  SettingsState.Volume * 100.0f;
+            click = new Sound(new SoundBuffer("res/sounds/zipclick.wav"));
+            click.Volume = SettingsState.Volume * 100.0f;
+            hover = new Sound(new SoundBuffer("res/sounds/hover.wav"));
+            hover.Volume = SettingsState.Volume * 100.0f;
 
             defaultFont = new Font("res/fonts/default.ttf");
         }
@@ -73,10 +80,14 @@ namespace TAC {
             walk.SoundBuffer.Dispose();
             swish.SoundBuffer.Dispose();
             grrr.SoundBuffer.Dispose();
+            click.SoundBuffer.Dispose();
+            hover.SoundBuffer.Dispose();
             slice.Dispose();
             walk.Dispose();
             swish.Dispose();
             grrr.Dispose();
+            click.Dispose();
+            hover.Dispose();
         }
     }
 }

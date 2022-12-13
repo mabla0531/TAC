@@ -60,35 +60,110 @@ namespace TAC {
             dropButton = new Button("Drop", new Vector2f(inventoryBG.Position.X + 8, inventoryBG.Position.Y + inventoryBG.Size.Y - 50));
             
             equipButton.onClick += (sender, e) => {
+                player.inventory.Items[index].Equipped = !player.inventory.Items[index].Equipped;
                 Item i = player.inventory.Items[index];
                 
-                if (i.ItemSlot == Item.Slot.Hand)
-                    player.Hand = i;
-                else if (i.ItemSlot == Item.Slot.Offhand)
-                    player.Offhand = i;
-                else if (i.ItemSlot == Item.Slot.Head)
-                    player.Head = i;
-                else if (i.ItemSlot == Item.Slot.Chest)
-                    player.Chest = i;
-                else if (i.ItemSlot == Item.Slot.Legs)
-                    player.Legs = i;
-                else if (i.ItemSlot == Item.Slot.Feet)
-                    player.Feet = i;
-                else
-                    player.Hand = i;
+                switch (i.ItemSlot) {
+                    case Item.Slot.Hand:
+                        player.Hand = null;
+                        if (i.Equipped)
+                            player.Hand = i;
+                        break;
+                    case Item.Slot.Offhand:
+                        player.Offhand = null;
+                        if (i.Equipped)
+                            player.Offhand = i;
+                        break;
+                    case Item.Slot.Head:
+                        player.Head = null;
+                        if (i.Equipped)
+                            player.Head = i;
+                        break;
+                    case Item.Slot.Chest:
+                        player.Chest = null;
+                        if (i.Equipped)
+                            player.Chest = i;
+                        break;
+                    case Item.Slot.Legs:
+                        player.Legs = null;
+                        if (i.Equipped)
+                            player.Legs = i;
+                        break;
+                    case Item.Slot.Feet:
+                        player.Feet = null;
+                        if (i.Equipped)
+                            player.Feet = i;
+                        break;
+                    default:
+                        player.Hand = null;
+                        if (i.Equipped)
+                            player.Hand = i;
+                        break;
+                }
             };
 
             dropButton.onClick += (sender, e) => {
-                if (player.inventory.Items.Count >= 1) player.inventory.Items.Remove(player.inventory.Items[index]);
-
-                //TODO implement dropping mechanic (spawn item on ground)
+                if (player.inventory.Items.Count >= 1) {
+                    if (player.inventory.Items[index].Equipped) {
+                        switch (player.inventory.Items[index].ItemSlot) {
+                            case Item.Slot.Hand: 
+                                player.Hand = null;
+                                break;
+                            case Item.Slot.Offhand: 
+                                player.Offhand = null;
+                                break;
+                            case Item.Slot.Chest: 
+                                player.Chest = null;
+                                break;
+                            case Item.Slot.Legs: 
+                                player.Legs = null;
+                                break;
+                            case Item.Slot.Feet: 
+                                player.Feet = null;
+                                break;
+                        }
+                    }
+                    
+                    player.inventory.Items[index].Equipped = false;
+                    Handler.gameState.Items.Add(new GroundItem(player.inventory.Items[index], player.X, player.Y));
+                    player.inventory.Items.Remove(player.inventory.Items[index]);
+                }
             };
         }
 
         public void tick() {
-            
             if (!Active) //escape clause for non active inventory
                 return;
+
+            foreach (Item i in player.inventory.Items) {
+                switch (i.ItemSlot) {
+                    case Item.Slot.Hand: 
+                        if (player.Hand != i) {
+                            i.Equipped = false;
+                        }
+                        break;
+                    case Item.Slot.Offhand: 
+                        if (player.Offhand != i) {
+                            i.Equipped = false;
+                        }
+                        break;
+                    case Item.Slot.Chest: 
+                        if (player.Chest != i) {
+                            i.Equipped = false;
+                        }
+                        break;
+                    case Item.Slot.Legs: 
+                        if (player.Legs != i) {
+                            i.Equipped = false;
+                        }
+                        break;
+                    case Item.Slot.Feet: 
+                        if (player.Feet != i) {
+                            i.Equipped = false;
+                        }
+                        break;
+                }
+            }
 
             if (MouseHandler.WheelMove != 0) {
                 index -= MouseHandler.WheelMove; //mouse wheel int direction is flipped from index, so -=
@@ -131,12 +206,21 @@ namespace TAC {
             if (player.inventory.Items.Count <= 0)
                 return;
 
+            
+            //maintain constraints of index
+            if (index < 0) index = 0;
+            if (index >= player.inventory.Items.Count) index = player.inventory.Items.Count - 1;
+
+
             int offset = -40;
             for (int i = index - 2; i <= index + 2; i++) {
                 if (i >= 0 && i < player.inventory.Items.Count) {    
                     itemLabel.DisplayedString = player.inventory.Items[i].Name;
                     itemLabel.Position = new Vector2f(inventoryBG.Position.X + 16, inventoryBG.Position.Y + 50 + offset);
-                    
+                    itemLabel.FillColor = new Color(200, 200, 200);
+                    if (player.inventory.Items[i].Equipped)
+                        itemLabel.FillColor = new Color(212, 175, 55);
+
                     window.Draw(itemLabel);
                 }
 

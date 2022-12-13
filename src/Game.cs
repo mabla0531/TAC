@@ -77,7 +77,8 @@ namespace TAC {
                     MouseHandler.MouseX = Mouse.GetPosition(window).X;
                     MouseHandler.MouseY = Mouse.GetPosition(window).Y;
 
-                    tick();
+                    if (window.HasFocus())
+                        tick();
                 }
 
                 window.DispatchEvents();

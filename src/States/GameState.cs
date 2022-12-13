@@ -12,10 +12,13 @@ namespace TAC {
         private Map map1;
         public static Map currentMap;
         public Player player {get; set;}
-        public List<Entity> Entities {get; set; }
-        public Vector2i gameCameraOffset; 
+        public List<Entity> Entities {get; set;}
+        public List<GroundItem> Items {get; set;}
+        public Vector2i gameCameraOffset;
         public bool Paused {get; set;}
         private bool pauseKeyPressed;
+        private bool ableToPickUpItem = true;
+        private GroundItem itemToPickUp = null;
 
         private RectangleShape pauseMenuBG;
         private GaussianBlur gb;
@@ -33,6 +36,7 @@ namespace TAC {
             Entities = new List<Entity>();
             Entities.Add(player);
             Entities.Add(new HostileMob(200.0f, 200.0f));
+            Items = new List<GroundItem>();
             gameCameraOffset = new Vector2i(0, 0);
 
             player.X = 500.0f;
@@ -150,10 +154,11 @@ namespace TAC {
             if (gameCameraOffset.X > (map1.Width * 32) - Game.displayWidth) gameCameraOffset.X = (int)((map1.Width * 32) - Game.displayWidth);
             if (gameCameraOffset.Y > (map1.Height * 32) - Game.displayHeight) gameCameraOffset.Y = (int)((map1.Height * 32) - Game.displayHeight);
 
+            //Sort entities by Y value, to give 3D effect
             Entities.Sort(Comparer<Entity>.Create((e1, e2) => e1.Y.CompareTo(e2.Y)));
 
+            //Tick all entities, then remove if needed
             List<Entity> entitiesToRemove = new List<Entity>();
-
             foreach (Entity e in Entities) {
                 if (e.Health <= 0) {
                     entitiesToRemove.Add(e);
@@ -161,18 +166,43 @@ namespace TAC {
                 }
                 e.tick();
             }
-
             foreach (Entity e in entitiesToRemove) {
                 Entities.Remove(e);
             }
-            
+
+            //Tick ground based items
+            if (!MouseHandler.RightClick)
+                ableToPickUpItem = true; //Might be a better way to go about this, don't know and not important enough right now
+
+            itemToPickUp = null;
+            foreach(GroundItem g in Items) {
+                if (MouseHandler.RightClick && g.Hovered && ableToPickUpItem) {
+                    Handler.gameState.player.inventory.addItem(g.ItemReference);
+                    itemToPickUp = g;
+                    ableToPickUpItem = false;
+                    continue;
+                }
+                g.tick();
+            }
+
+            if (itemToPickUp != null)
+                Items.Remove(itemToPickUp); //Time travel would have been invented if we could remove a list member during iteration
         }
 
         public override void render(RenderWindow window) {
             map1.render(window, gameCameraOffset);
             
+            //Render ground based items first, so they're under everything
+            foreach(GroundItem g in Items) {
+                g.render(window);
+            }
+
             foreach (Entity e in Entities) {
                 e.render(window);
+            }
+
+            foreach (GroundItem g in Items) {
+                g.renderTooltip(window); //Put tooltips above everything else so character doesn't walk over it
             }
 
             if (Paused) {

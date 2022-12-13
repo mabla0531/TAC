@@ -8,6 +8,7 @@ namespace TAC {
         public Sprite Icon {get; set;}
         public Rarity ItemRarity {get; set;}
         public Slot ItemSlot {get; set;}
+        public bool Equipped {get; set;}
         
 
         public static Item sword = new Item(1.0, 10, "Sword", new Sprite(Assets.items, new IntRect(32, 112, 16, 16)), Rarity.Legendary, Slot.Hand);
@@ -34,6 +35,7 @@ namespace TAC {
         }
 
         public Item(double weight = 0.0, int value = 0, string name = "", Sprite sprite = null, Rarity itemRarity = Rarity.Common, Slot itemSlot = Slot.Hand) {
+            Equipped = false;
             Weight = weight;
             Value = value;
             Name = name;
@@ -43,6 +45,7 @@ namespace TAC {
         }
 
         public Item(Item i) {
+            Equipped = false;
             Weight = i.Weight;
             Value = i.Value;
             Name = i.Name;

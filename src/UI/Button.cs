@@ -8,7 +8,7 @@ namespace TAC {
         public Text drawText {get; set;}
         public Vector2f Position {get; set;}
         public Vector2f Size {get; set;}
-        private bool pressed;
+        private bool pressed, hovered;
 
         private Color buttonColor;
         private RectangleShape buttonRect;
@@ -40,6 +40,7 @@ namespace TAC {
             gb = new GaussianBlur((int)Size.X, (int)Size.Y);
 
             pressed = false;
+            hovered = false;
 
             buttonColor = new Color(80, 80, 80);
             if (translucent) buttonColor = new Color(80, 80, 80, 200);
@@ -48,19 +49,32 @@ namespace TAC {
         }
 
         public void tick() {
-            if (pressed && !MouseHandler.LeftClick) {
-                Assets.walk.Play();
-                onClick?.Invoke(this, EventArgs.Empty);
-            }
-
-            pressed = false;
-
             buttonRect.FillColor = buttonColor;
+
             if (new IntRect((Vector2i)Position, (Vector2i)Size).Contains((int)MouseHandler.MouseX, (int)MouseHandler.MouseY)) {
                 buttonRect.FillColor = new Color((byte)(buttonColor.R + 20), (byte)(buttonColor.G + 20), (byte)(buttonColor.B + 20), buttonColor.A);
-                if (MouseHandler.LeftClick)
+
+                if (!hovered)
+                    Assets.hover.Play();
+                
+                hovered = true;
+                
+                if (MouseHandler.LeftClick) {
+                    if (!pressed)
+                        Assets.click.Play();
                     pressed = true;
+                }
+
+                if (pressed && !MouseHandler.LeftClick) {
+                    onClick?.Invoke(this, EventArgs.Empty);
+                }
             }
+
+            if (!MouseHandler.LeftClick)
+                pressed = false;
+
+            if (!new IntRect((Vector2i)Position, (Vector2i)Size).Contains((int)MouseHandler.MouseX, (int)MouseHandler.MouseY))
+                hovered = false;
         }
 
         public void render(RenderWindow window) {            

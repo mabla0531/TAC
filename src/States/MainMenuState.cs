@@ -1,6 +1,5 @@
 using SFML.System;
 using SFML.Graphics;
-using System;
 
 namespace TAC {
     class MainMenuState : State {
@@ -19,25 +18,21 @@ namespace TAC {
 
             startButton = new Button("Start", new Vector2f(64.0f, 192.0f), true);
             startButton.onClick += (sender, e) => {
-                Console.WriteLine("Start");
                 game.startGame();
             };
 
             loadButton = new Button("Load", new Vector2f(64.0f, 256.0f), true);
             loadButton.onClick += (sender, e) => {
-                Console.WriteLine("Load");
                 game.loadGame();
             };
 
             settingsButton = new Button("Settings", new Vector2f(64.0f, 320.0f), true);
             settingsButton.onClick += (sender, e) => {
-                Console.WriteLine("Settings");
                 game.showSettings();
             };
 
             exitButton = new Button("Exit", new Vector2f(64.0f, 384.0f), true);
             exitButton.onClick += (sender, e) => {
-                Console.WriteLine("Exit");
                 game.stop();
             };
 
