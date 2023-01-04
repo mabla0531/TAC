@@ -14,6 +14,7 @@ namespace TAC {
         public static Texture menuArt;
         public static Texture logo;
         public static Texture settings;
+        public static Texture tree;
         public static byte[] cursorData;
 
         //Shaders
@@ -48,6 +49,7 @@ namespace TAC {
             menuArt = new Texture("res/textures/menuart.png");
             logo = new Texture("res/textures/logo.png");
             settings = new Texture("res/textures/settings.png");
+            tree = new Texture("res/textures/tree.png");
 
             //create cursor (SFML's Texture class and image handling is so goofy it's mind blowing)
             RenderTexture cursor = new RenderTexture(12, 17);

@@ -35,7 +35,7 @@ namespace TAC {
             player = new Player(200.0f, 200.0f);
             Entities = new List<Entity>();
             Entities.Add(player);
-            Entities.Add(new HostileMob(200.0f, 200.0f));
+
             Items = new List<GroundItem>();
             gameCameraOffset = new Vector2i(0, 0);
 
