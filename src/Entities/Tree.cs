@@ -15,16 +15,14 @@ namespace TAC {
             Y = y;
 
             collisionBounds = new FloatRect(16.0f, 96.0f, 16.0f, 32.0f);//preliminarily make the boundary just the trunk (or close to it)
-            sprite = new Sprite(Assets.tree);
-        }
+            EntitySprite = new Sprite(Assets.tree);
 
-        public override void tick() {
-            
-        }
+            tick += () => {};
 
-        public override void render(RenderWindow window) {
-            sprite.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X, Y - Handler.gameState.gameCameraOffset.Y);
-            window.Draw(sprite);
+            render += (RenderWindow window) => {
+                EntitySprite.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X, Y - Handler.gameState.gameCameraOffset.Y);
+                window.Draw(EntitySprite);
+            };
         }
     }
 }

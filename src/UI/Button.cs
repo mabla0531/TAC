@@ -59,18 +59,17 @@ namespace TAC {
                 
                 hovered = true;
                 
-                if (MouseHandler.LeftClick) {
-                    if (!pressed)
-                        Assets.click.Play();
+                if (MouseHandler.LeftPressed) {
+                    Assets.click.Play();
                     pressed = true;
                 }
 
-                if (pressed && !MouseHandler.LeftClick) {
+                if (pressed && !MouseHandler.LeftButton) {
                     onClick?.Invoke(this, EventArgs.Empty);
                 }
             }
 
-            if (!MouseHandler.LeftClick)
+            if (!MouseHandler.LeftButton)
                 pressed = false;
 
             if (!new IntRect((Vector2i)Position, (Vector2i)Size).Contains((int)MouseHandler.MouseX, (int)MouseHandler.MouseY))

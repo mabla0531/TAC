@@ -15,28 +15,50 @@ namespace TAC {
         protected Clock attackCooldown;
         protected int attackInterval;
 
+        public float InteractionRange {get; set;}
+
         protected float knockbackX, knockbackY;
         protected float appliedKnockbackX, appliedKnockbackY;
 
         protected float moveX, moveY;
 
-        public Inventory inventory {get; set;} //I would love to capitalize it, I really would, but unfortunately my hands are tied
-
         public ActiveEntity() : base() {
             attackRNG = new Random();
             attackCooldown = new Clock();
             attackInterval = 1500;
+            InteractionRange = 64.0f;
             knockbackX = 0.0f;
             knockbackY = 0.0f;
             appliedKnockbackX = 0.0f;
             appliedKnockbackY = 0.0f;
             MaxHealth = 10;
             Health = MaxHealth;
-            inventory = new Inventory();
+
+            IsKillable = true;
+
+            tick += () => {
+                moveX = 0.0f;
+                moveY = 0.0f;
+                direction = 4;
+
+                if (DisplayHealth > Health) {
+                    DisplayHealth -= 0.05f;
+                }
+            };
+
+            render += (RenderWindow window) => {
+                EntitySprite.TextureRect = new IntRect(32, 0, 32, 32);
+
+                if (direction != 4)
+                    EntitySprite.TextureRect = animationFrames[currAnimFrame + (direction * 4)];
+
+            };
         }
 
-        protected void attack(ActiveEntity e) {
+        protected void attack(ActiveEntity e, float angle) {
             e.hurt(attackAlpha);
+
+            knockback(e, angle, 32.0f);
         }
 
         protected void knockback(ActiveEntity e, double angle, float power) {
@@ -79,7 +101,7 @@ namespace TAC {
         }
 
         public void tickAnimation() {
-            if (direction == 5) {
+            if (direction == 4) {
                 currAnimFrame = 0;
             } else {
                 if (animFrameDelay.ElapsedTime.AsMilliseconds() >= animFrameInterTime * 1)
@@ -113,30 +135,6 @@ namespace TAC {
                 knockbackY = 0.0f;
                 appliedKnockbackY = 0.0f;
             }
-        }
-
-        public abstract void specificTick();
-
-        public override void tick() {
-            moveX = 0.0f;
-            moveY = 0.0f;
-            direction = 5;
-
-            specificTick();
-        }
-
-        public abstract void specificRender(RenderWindow window);
-
-        public override void render(RenderWindow window) {
-
-            sprite.TextureRect = new IntRect(32, 0, 32, 32);
-            if (direction != 5)
-                sprite.TextureRect = animationFrames[currAnimFrame + (direction * 4)];
-
-            sprite.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X, Y - Handler.gameState.gameCameraOffset.Y);
-            window.Draw(sprite);
-
-            specificRender(window);
         }
     }
 }

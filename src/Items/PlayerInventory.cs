@@ -2,7 +2,7 @@ using SFML.Graphics;
 using SFML.System;
 
 namespace TAC {
-    class InventoryInterface {
+    class PlayerInventory {
         
         private Player player;
         private RectangleShape inventoryBG;
@@ -22,7 +22,7 @@ namespace TAC {
 
         private Button equipButton, dropButton;
 
-        public InventoryInterface(Player p) {
+        public PlayerInventory(Player p) {
             player = p;
 
             inventoryBG = new RectangleShape(new Vector2f(276.0f, 256.0f));
@@ -56,8 +56,8 @@ namespace TAC {
             itemHighlight.OutlineColor = new Color(128, 128, 128);
             itemHighlight.OutlineThickness = 1.0f;
 
-            equipButton = new Button("Equip", new Vector2f(inventoryBG.Position.X + inventoryBG.Size.X - 136, inventoryBG.Position.Y + inventoryBG.Size.Y - 50));
-            dropButton = new Button("Drop", new Vector2f(inventoryBG.Position.X + 8, inventoryBG.Position.Y + inventoryBG.Size.Y - 50));
+            equipButton = new Button("Equip", new Vector2f(inventoryBG.Position.X + inventoryBG.Size.X - 136.0f, inventoryBG.Position.Y + inventoryBG.Size.Y - 50.0f));
+            dropButton = new Button("Drop", new Vector2f(inventoryBG.Position.X + 8.0f, inventoryBG.Position.Y + inventoryBG.Size.Y - 50.0f));
             
             equipButton.onClick += (sender, e) => {
                 player.inventory.Items[index].Equipped = !player.inventory.Items[index].Equipped;

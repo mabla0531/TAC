@@ -5,7 +5,6 @@ namespace TAC {
     class GroundItem : Entity {
 
         public Item ItemReference {get; set;}
-        public bool Hovered = false;
         public bool PickedUp {get; set;} = false;
 
         private RectangleShape tooltipBackground;
@@ -21,8 +20,8 @@ namespace TAC {
             X = x;
             Y = y;
 
-            sprite = new Sprite(Assets.items);
-            sprite.TextureRect = itemRef.Icon.TextureRect;
+            EntitySprite = new Sprite(Assets.items);
+            EntitySprite.TextureRect = itemRef.Icon.TextureRect;
 
             tooltipBackground = new RectangleShape(new Vector2f(96.0f, 48.0f));
             tooltipBackground.FillColor = new Color(36, 58, 71);
@@ -34,24 +33,22 @@ namespace TAC {
             tooltipText.OutlineColor = Color.Black;
             tooltipText.OutlineThickness = 1.0f;
             tooltipText.CharacterSize = 15;
-        }
 
-        public override void tick() {
-            Hovered = false;
-            if (new IntRect((int)(X - Handler.gameState.gameCameraOffset.X), (int)(Y - Handler.gameState.gameCameraOffset.Y), sprite.TextureRect.Width, sprite.TextureRect.Height).Contains((int)MouseHandler.MouseX, (int)MouseHandler.MouseY))
-                Hovered = true;
-        }
+            tick += () => {
 
-        public override void render(RenderWindow window) {
-            sprite.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X, Y - Handler.gameState.gameCameraOffset.Y);
-            window.Draw(sprite);
+            };
+
+            render += (RenderWindow window) => {
+                EntitySprite.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X, Y - Handler.gameState.gameCameraOffset.Y);
+                window.Draw(EntitySprite);
+            };
         }
 
         public void renderTooltip(RenderWindow window) {
             if (!Hovered) return;
 
             //render tooltip if hovered
-            tooltipBackground.Position = new Vector2f(sprite.Position.X + sprite.TextureRect.Width, sprite.Position.Y + sprite.TextureRect.Height);
+            tooltipBackground.Position = new Vector2f(EntitySprite.Position.X + EntitySprite.TextureRect.Width, EntitySprite.Position.Y + EntitySprite.TextureRect.Height);
             window.Draw(tooltipBackground);
             tooltipText.Position = new Vector2f(tooltipBackground.Position.X + 2, tooltipBackground.Position.Y);
             window.Draw(tooltipText);

@@ -9,10 +9,6 @@ namespace TAC {
             Items = new List<Item>();
         }
 
-        public void addItem(Item item) {
-            Items.Add(item);
-        }
-
         public double getTotalWeight() {
             double weight = 0;
             foreach (Item i in Items) {

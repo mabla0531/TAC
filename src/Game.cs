@@ -63,6 +63,11 @@ namespace TAC {
                 if (tickLimiter.ElapsedTime.AsMilliseconds() >= 10) {
                     tickLimiter.Restart(); //limit execution to 100 ticks per second, so it runs 
                                            //uniformly on (most) systems, excluding the TI-84 Calculator
+                    
+                    MouseHandler.LeftPressed = false;
+                    MouseHandler.RightPressed = false;
+                    window.DispatchEvents();
+
                     if ((Keyboard.IsKeyPressed(Keyboard.Key.RAlt) || Keyboard.IsKeyPressed(Keyboard.Key.LAlt)) && Keyboard.IsKeyPressed(Keyboard.Key.Enter) && !enterPressed) {
                         //if Alt+Enter is pressed
                         enterPressed = true;
@@ -81,7 +86,6 @@ namespace TAC {
                         tick();
                 }
 
-                window.DispatchEvents();
                 window.Clear();
                 render();
                 window.Display();
@@ -97,14 +101,20 @@ namespace TAC {
             window.Closed += (sender, e) => {
                 running = false;
                 ((Window)sender).Close();
-                }; //add closing event as lambda function
+            }; //add closing event as lambda function
             window.MouseButtonPressed += (sender, e) => {
-                if (e.Button == Mouse.Button.Left) MouseHandler.LeftClick = true;
-                if (e.Button == Mouse.Button.Right) MouseHandler.RightClick = true;
+                if (e.Button == Mouse.Button.Left) {
+                    MouseHandler.LeftButton = true;
+                    MouseHandler.LeftPressed = true;
+                }
+                if (e.Button == Mouse.Button.Right) {
+                    MouseHandler.RightButton = true;
+                    MouseHandler.RightPressed = true;
+                }
             };
             window.MouseButtonReleased += (sender, e) => {
-                if (e.Button == Mouse.Button.Left) MouseHandler.LeftClick = false;
-                if (e.Button == Mouse.Button.Right) MouseHandler.RightClick = false;
+                if (e.Button == Mouse.Button.Left) MouseHandler.LeftButton = false;
+                if (e.Button == Mouse.Button.Right) MouseHandler.RightButton = false;
             };
             window.MouseWheelScrolled += (sender, e) => {
                 if (e.Delta < 0.0) MouseHandler.WheelMove = -1;

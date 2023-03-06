@@ -110,7 +110,7 @@ namespace TAC {
 
         }
 
-        public void render(RenderWindow window, Vector2i gameCameraOffset) {
+        public void render(RenderWindow window, Vector2f gameCameraOffset) {
 
             for (int y = 0; y < Height; y++) {
                 if (y % 2 == 0) {

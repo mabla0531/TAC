@@ -27,7 +27,7 @@ namespace TAC {
         }
 
         public void tick() {
-            if (new FloatRect(Position.X - 4, Position.Y - 4, Length + 8, 20).Contains(MouseHandler.MouseX, MouseHandler.MouseY) && MouseHandler.LeftClick) {
+            if (new FloatRect(Position.X - 4, Position.Y - 4, Length + 8, 20).Contains(MouseHandler.MouseX, MouseHandler.MouseY) && MouseHandler.LeftButton) {
                 Fill = MouseHandler.MouseX - (Position.X);
             }
 

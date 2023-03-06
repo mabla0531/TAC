@@ -51,10 +51,6 @@ namespace TAC {
             //draw in position of stamina bar
             statBar.Position    = new Vector2f(hudFrame.Position.X + 16, Game.displayHeight - hudHeight + 36);
             window.Draw(statBar);
-
-            if (player.DisplayHealth > player.Health) {
-                player.DisplayHealth -= 0.01f;
-            }
             
             healthFill.Position = new Vector2f(hudFrame.Position.X + 16,  Game.displayHeight - hudHeight + 16);
             healthFill.Size = new Vector2f(128.0f * (player.DisplayHealth / (float)player.MaxHealth), 16.0f);

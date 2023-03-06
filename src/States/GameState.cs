@@ -14,11 +14,13 @@ namespace TAC {
         public Player player {get; set;}
         public List<Entity> Entities {get; set;}
         public List<GroundItem> Items {get; set;}
-        public Vector2i gameCameraOffset;
+        public Vector2f gameCameraOffset;
         public bool Paused {get; set;}
         private bool pauseKeyPressed;
-        private bool ableToPickUpItem = true;
         private GroundItem itemToPickUp = null;
+        public bool StorageHovering {get; set;} = false;
+        private StorageInventory storageInventory;
+        public bool StorageInventoryActive {get; set;} = false;
 
         private RectangleShape pauseMenuBG;
         private GaussianBlur gb;
@@ -29,15 +31,22 @@ namespace TAC {
 
         private HUD hud;
 
+        private Sprite storageIcon;
+
+
         public GameState() : base() {
             map1 = new Map("res/maps/test.map");
             currentMap = map1;
-            player = new Player(200.0f, 200.0f);
+            player = new Player(100.0f, 100.0f);
             Entities = new List<Entity>();
             Entities.Add(player);
+            HostileMob mob1 = new HostileMob(64.0f, 64.0f);
+            mob1.inventory.Items.Add(Item.sword);
+            mob1.inventory.Items.Add(Item.shovel);
+            Entities.Add(mob1);
 
             Items = new List<GroundItem>();
-            gameCameraOffset = new Vector2i(0, 0);
+            gameCameraOffset = new Vector2f(0, 0);
 
             player.X = 500.0f;
             player.Y = 500.0f;
@@ -45,25 +54,29 @@ namespace TAC {
             Paused = false;
             pauseKeyPressed = false;
 
+            storageInventory = new StorageInventory(player, null);
+
             pauseMenuBG = new RectangleShape(new Vector2f(276.0f, 256.0f));
             pauseMenuBG.Position = new Vector2f((Game.displayWidth / 2) - (pauseMenuBG.Size.X / 2), (Game.displayHeight / 2) - (pauseMenuBG.Size.Y));
             pauseMenuBG.FillColor = new Color(36, 58, 71, 230);
             gb = new GaussianBlur((int)pauseMenuBG.Size.X, (int)pauseMenuBG.Size.Y);
 
-            resume =    new Button("Resume",    new Vector2f(pauseMenuBG.Position.X + (pauseMenuBG.Size.X / 2) - 64.0f, pauseMenuBG.Position.Y + 16.0f));
-            save =      new Button("Save",      new Vector2f(pauseMenuBG.Position.X + (pauseMenuBG.Size.X / 2) - 64.0f, pauseMenuBG.Position.Y + 75.0f));
-            settings =  new Button("Settings",  new Vector2f(pauseMenuBG.Position.X + (pauseMenuBG.Size.X / 2) - 64.0f, pauseMenuBG.Position.Y + 133.0f));
-            quit =      new Button("Quit",      new Vector2f(pauseMenuBG.Position.X + (pauseMenuBG.Size.X / 2) - 64.0f, pauseMenuBG.Position.Y + 192.0f));
+            resume   = new Button("Resume",   new Vector2f(pauseMenuBG.Position.X + (pauseMenuBG.Size.X / 2) - 64.0f, pauseMenuBG.Position.Y + 16.0f));
+            save     = new Button("Save",     new Vector2f(pauseMenuBG.Position.X + (pauseMenuBG.Size.X / 2) - 64.0f, pauseMenuBG.Position.Y + 75.0f));
+            settings = new Button("Settings", new Vector2f(pauseMenuBG.Position.X + (pauseMenuBG.Size.X / 2) - 64.0f, pauseMenuBG.Position.Y + 133.0f));
+            quit     = new Button("Quit",     new Vector2f(pauseMenuBG.Position.X + (pauseMenuBG.Size.X / 2) - 64.0f, pauseMenuBG.Position.Y + 192.0f));
 
-            resume.onClick +=   (sender, e) => { Paused = false; };
-            save.onClick +=     (sender, e) => { saveGame(); };
+            resume.onClick   += (sender, e) => { Paused = false; };
+            save.onClick     += (sender, e) => { saveGame(); };
             settings.onClick += (sender, e) => { Handler.game.showSettings(); };
-            quit.onClick +=     (sender, e) => {
+            quit.onClick     += (sender, e) => {
                 Paused = false;
                 Handler.game.popState();
             };
 
             hud = new HUD(player);
+
+            storageIcon = new Sprite(Assets.terrain, new IntRect(608, 640, 16, 16));
         }
 
         public void saveGame() {
@@ -157,29 +170,44 @@ namespace TAC {
             //Sort entities by Y value, to give 3D effect
             Entities.Sort(Comparer<Entity>.Create((e1, e2) => e1.Y.CompareTo(e2.Y)));
 
-            //Tick all entities, then remove if needed
-            List<Entity> entitiesToRemove = new List<Entity>();
-            foreach (Entity e in Entities) {
-                if (e.Health <= 0) {
-                    entitiesToRemove.Add(e);
-                    continue;
+            //Tick all entities, then spawn corpse if needed
+            StorageHovering = false;
+            for (int i = 0; i < Entities.Count; i++) {
+
+                if (Entities[i].Health <= 0 && Entities[i].IsKillable) {
+                    Corpse c = new Corpse(new Vector2f(Entities[i].X, Entities[i].Y));
+                    c.inventory = Entities[i].inventory;
+                    Entities[i] = c;
                 }
-                e.tick();
+                Entities[i].tick();
+
+                if (Entities[i].Hovered && Entities[i] is StorageEntity)
+                    StorageHovering = true;
+
+                if (Entities[i] == player)
+                    continue;
+
+                //Interaction
+
+                float currentEntityDeltaX = Entities[i].X - player.X;
+                float currentEntityDeltaY = Entities[i].Y - player.Y;
+
+                if (StorageHovering && !StorageInventoryActive && MouseHandler.RightPressed && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) < player.InteractionRange) {
+                    StorageInventoryActive = true;
+                    storageInventory.Position = new Vector2f(MouseHandler.MouseX, MouseHandler.MouseY);
+                    storageInventory.entity = (StorageEntity)Entities[i];
+                }
             }
-            foreach (Entity e in entitiesToRemove) {
-                Entities.Remove(e);
-            }
+
+            if (!new FloatRect(storageInventory.Position, storageInventory.Size).Contains(MouseHandler.MouseX, MouseHandler.MouseY) && StorageInventoryActive && (MouseHandler.RightButton || MouseHandler.LeftButton))
+                StorageInventoryActive = false;
 
             //Tick ground based items
-            if (!MouseHandler.RightClick)
-                ableToPickUpItem = true; //Might be a better way to go about this, don't know and not important enough right now
-
             itemToPickUp = null;
             foreach(GroundItem g in Items) {
-                if (MouseHandler.RightClick && g.Hovered && ableToPickUpItem) {
-                    Handler.gameState.player.inventory.addItem(g.ItemReference);
+                if (MouseHandler.RightPressed && g.Hovered) {
+                    Handler.gameState.player.inventory.Items.Add(g.ItemReference);
                     itemToPickUp = g;
-                    ableToPickUpItem = false;
                     continue;
                 }
                 g.tick();
@@ -187,6 +215,9 @@ namespace TAC {
 
             if (itemToPickUp != null)
                 Items.Remove(itemToPickUp); //Time travel would have been invented if we could remove a list member during iteration
+
+            if (StorageInventoryActive)
+                    storageInventory.tick();
         }
 
         public override void render(RenderWindow window) {
@@ -221,6 +252,17 @@ namespace TAC {
             }
 
             hud.render(window);
+
+            if (StorageHovering) {
+                storageIcon.Position = new Vector2f(MouseHandler.MouseX + 16.0f, MouseHandler.MouseY + 16.0f);
+                window.Draw(storageIcon);
+            }
+
+            if (StorageInventoryActive) {
+                //                                      Because of text rendering system, if X/Y are decimal point numbers text is gross and blurry
+                storageInventory.Position = new Vector2f((int)(storageInventory.entity.X - gameCameraOffset.X), (int)(storageInventory.entity.Y - gameCameraOffset.Y));
+                storageInventory.render(window);
+            }
         }
     }
 }

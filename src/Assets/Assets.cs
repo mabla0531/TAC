@@ -9,6 +9,7 @@ namespace TAC {
         public static Texture terrain;
         public static Texture player;
         public static Texture enemy;
+        public static Texture corpse;
         public static Texture ui;
         public static Texture items;
         public static Texture menuArt;
@@ -41,15 +42,16 @@ namespace TAC {
         }
 
         public static void init() { //bit schewpid, init()? 
-            terrain = new Texture("res/textures/terrain.png");
-            player = new Texture("res/textures/player.png");
-            enemy = new Texture("res/textures/enemy.png");
-            ui = new Texture("res/textures/ui.png");
-            items = new Texture("res/textures/items.png");
-            menuArt = new Texture("res/textures/menuart.png");
-            logo = new Texture("res/textures/logo.png");
+            terrain  = new Texture("res/textures/terrain.png");
+            player   = new Texture("res/textures/player.png");
+            enemy    = new Texture("res/textures/enemy.png");
+            corpse   = new Texture("res/textures/corpse.png");
+            ui       = new Texture("res/textures/ui.png");
+            items    = new Texture("res/textures/items.png");
+            menuArt  = new Texture("res/textures/menuart.png");
+            logo     = new Texture("res/textures/logo.png");
             settings = new Texture("res/textures/settings.png");
-            tree = new Texture("res/textures/tree.png");
+            tree     = new Texture("res/textures/tree.png");
 
             //create cursor (SFML's Texture class and image handling is so goofy it's mind blowing)
             RenderTexture cursor = new RenderTexture(12, 17);
@@ -62,16 +64,16 @@ namespace TAC {
             gaussianBlur = new Shader(null, null, "res/shaders/gaussian.frag");
 
             slice = new Sound(new SoundBuffer("res/sounds/knifeSlice.ogg"));
-            slice.Volume = SettingsState.Volume * 100.0f;
             walk  = new Sound(new SoundBuffer("res/sounds/leaves01.ogg"));
-            walk.Volume =  SettingsState.Volume * 100.0f;
             swish = new Sound(new SoundBuffer("res/sounds/swish-4.wav"));
-            swish.Volume = SettingsState.Volume * 100.0f;
             grrr  = new Sound(new SoundBuffer("res/sounds/monster-4.wav"));
-            grrr.Volume =  SettingsState.Volume * 100.0f;
             click = new Sound(new SoundBuffer("res/sounds/zipclick.wav"));
-            click.Volume = SettingsState.Volume * 100.0f;
             hover = new Sound(new SoundBuffer("res/sounds/hover.wav"));
+            slice.Volume = SettingsState.Volume * 100.0f;
+            walk.Volume  = SettingsState.Volume * 100.0f;
+            swish.Volume = SettingsState.Volume * 100.0f;
+            grrr.Volume  = SettingsState.Volume * 100.0f;
+            click.Volume = SettingsState.Volume * 100.0f;
             hover.Volume = SettingsState.Volume * 100.0f;
 
             defaultFont = new Font("res/fonts/default.ttf");
