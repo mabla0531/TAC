@@ -4,12 +4,12 @@ using SFML.Graphics;
 namespace TAC {
     abstract class StorageEntity : Entity {
         
-        public StorageEntity(Vector2f p) : base() {
+        public StorageEntity(float x, float y) : base() {
             Health = 1;
             MaxHealth = 1;
 
-            X = p.X;
-            Y = p.Y;
+            X = x;
+            Y = y;
 
             collisionBounds.Left   = 0;
             collisionBounds.Top    = 0;

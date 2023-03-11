@@ -51,7 +51,6 @@ namespace TAC {
             healthBar.FillColor = new Color(32, 32, 32);
 
             tick += () => {
-
                 float playerDeltaX = (Handler.gameState.player.X + 16) - (X + 16);
                 float playerDeltaY = (Handler.gameState.player.Y + 16) - (Y + 16); //add 16 to get center
 
@@ -89,7 +88,6 @@ namespace TAC {
                 Y += moveY;
 
                 tickAnimation();
-
             };
 
             render += (RenderWindow window) => {

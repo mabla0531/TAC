@@ -15,7 +15,7 @@ namespace TAC {
         private bool cooldown = false;
 
         //player addons
-        private Sprite sword;
+        private Sprite aimAngle;
 
         private RectangleShape cooldownBarBackground, cooldownBar;
 
@@ -39,8 +39,8 @@ namespace TAC {
             EntitySprite = new Sprite(Assets.player);
             EntitySprite.TextureRect = new IntRect(32, 0, 32, 32);
 
-            sword = new Sprite(Assets.items);
-            sword.TextureRect = new IntRect(16, 112, 16, 16);
+            aimAngle = new Sprite(Assets.items);
+            aimAngle.TextureRect = new IntRect(16, 112, 16, 16);
 
             DefaultTextureRect = new IntRect(32, 0,  32, 32);
             animationFrames = new IntRect[16] {new IntRect(0,  0,  32, 32), //factors in direction (0-4, set of four frames)
@@ -66,7 +66,7 @@ namespace TAC {
             Health = 10;
             DisplayHealth = (float)Health;
 
-            attackAlpha = 100;
+            attackAlpha = 1;
 
             cooldownBarBackground = new RectangleShape(new Vector2f(18, 4));
             cooldownBarBackground.FillColor = new Color(200, 200, 200);
@@ -74,10 +74,6 @@ namespace TAC {
             cooldownBar.FillColor = new Color(32, 32, 32);
 
             inventoryInterface = new PlayerInventory(this);
-            inventory.Items.Add(Item.sword);
-            inventory.Items.Add(Item.axe);
-            inventory.Items.Add(Item.pickaxe);
-            inventory.Items.Add(Item.shovel);
 
             tick += () => {
                 float mouseAngle;
@@ -94,7 +90,7 @@ namespace TAC {
                 float mouseDeltaY = MouseHandler.MouseY - (Y - Handler.gameState.gameCameraOffset.Y + 16); //add 16 to get center
 
                 mouseAngle = (float)Math.Atan2(mouseDeltaY, mouseDeltaX);
-                sword.Rotation = (float)((mouseAngle * (180 / Math.PI)) - 45.0f);
+                aimAngle.Rotation = (float)((mouseAngle * (180 / Math.PI)) - 45.0f);
                 
                 doKnockback();
 
@@ -181,8 +177,8 @@ namespace TAC {
             };
 
             render += (RenderWindow window) => {
-                sword.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X + 16.0f, Y - Handler.gameState.gameCameraOffset.Y + 20.0f);
-                window.Draw(sword);
+                aimAngle.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X + 16.0f, Y - Handler.gameState.gameCameraOffset.Y + 20.0f);
+                window.Draw(aimAngle);
 
                 cooldownBarBackground.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X + 8, Y - Handler.gameState.gameCameraOffset.Y + 34);
                 cooldownBar.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X + 9, Y - Handler.gameState.gameCameraOffset.Y + 35);
@@ -194,7 +190,7 @@ namespace TAC {
         }
 
         public override void hurt(int damage) {
-            Health -= damage;
+            Health -= (damage + Hand.Attack);
         }
     }
 }

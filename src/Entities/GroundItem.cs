@@ -48,7 +48,7 @@ namespace TAC {
             if (!Hovered) return;
 
             //render tooltip if hovered
-            tooltipBackground.Position = new Vector2f(EntitySprite.Position.X + EntitySprite.TextureRect.Width, EntitySprite.Position.Y + EntitySprite.TextureRect.Height);
+            tooltipBackground.Position = new Vector2f((int)(EntitySprite.Position.X + EntitySprite.TextureRect.Width), (int)(EntitySprite.Position.Y + EntitySprite.TextureRect.Height));
             window.Draw(tooltipBackground);
             tooltipText.Position = new Vector2f(tooltipBackground.Position.X + 2, tooltipBackground.Position.Y);
             window.Draw(tooltipText);

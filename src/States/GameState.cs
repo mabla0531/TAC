@@ -4,12 +4,13 @@ using SFML.Window;
 using System.Collections.Generic;
 using System.IO;
 using System;
+using System.Xml;
 
 namespace TAC {
 
     class GameState : State {
         
-        private Map map1;
+        public Map map {get; set;}
         public static Map currentMap;
         public Player player {get; set;}
         public List<Entity> Entities {get; set;}
@@ -35,21 +36,15 @@ namespace TAC {
 
 
         public GameState() : base() {
-            map1 = new Map("res/maps/test.map");
-            currentMap = map1;
+            map = new Map("res/maps/test.map");
+            currentMap = map;
             player = new Player(100.0f, 100.0f);
             Entities = new List<Entity>();
             Entities.Add(player);
-            HostileMob mob1 = new HostileMob(64.0f, 64.0f);
-            mob1.inventory.Items.Add(Item.sword);
-            mob1.inventory.Items.Add(Item.shovel);
-            Entities.Add(mob1);
 
             Items = new List<GroundItem>();
-            gameCameraOffset = new Vector2f(0, 0);
 
-            player.X = 500.0f;
-            player.Y = 500.0f;
+            gameCameraOffset = new Vector2f(0, 0);
 
             Paused = false;
             pauseKeyPressed = false;
@@ -80,61 +75,11 @@ namespace TAC {
         }
 
         public void saveGame() {
-            StreamWriter sw = new StreamWriter("saves/test.tac");
-            sw.WriteLine("[MAP]");
-            sw.WriteLine("test");
-            sw.WriteLine("[PLAYER]");
-            sw.WriteLine((double)player.X);
-            sw.WriteLine((double)player.Y);
-            sw.WriteLine(player.Health);
-            sw.WriteLine(player.MaxHealth);
-            sw.WriteLine((double)player.Stamina);
-            sw.WriteLine((double)player.MaxStamina);
-            foreach (Entity e in Entities) {
-                if (e != player) {
-                    sw.WriteLine("[ENTITY]");
-                    sw.WriteLine((double)e.X);
-                    sw.WriteLine((double)e.Y);
-                    sw.WriteLine(e.Health);
-                    sw.WriteLine(e.MaxHealth);
-                }
-            }
-
-            sw.Close();
+            XMLHandler.writeSaveFile(this);
         }
 
         public void loadGame() {
-            List<string> lines = new List<string>();
-            if (!File.Exists("saves/test.tac")) {
-                Console.Error.WriteLine("Could not open save file.");
-                return;
-            }
-
-            lines = new List<string>(File.ReadAllLines("saves/test.tac"));
-            
-            try {
-                for (int i = 0; i < lines.Count; i++) {
-                    if (lines[i] == "[MAP]") {
-                        i++;
-                        map1 = new Map("res/maps/" + lines[i] + ".map");
-                    } else if (lines[i] == "[PLAYER]") {
-                        player.X = float.Parse(lines[++i]);
-                        player.Y = float.Parse(lines[++i]);
-                        player.Health = int.Parse(lines[++i]);
-                        player.MaxHealth = int.Parse(lines[++i]);
-                        player.Stamina = float.Parse(lines[++i]);
-                        player.MaxStamina = float.Parse(lines[++i]);
-                    } else if (lines[i] == "[ENTITY]") {
-                        HostileMob hm = new HostileMob(float.Parse(lines[++i]), float.Parse(lines[++i]));
-                        hm.Health = int.Parse(lines[++i]);
-                        hm.MaxHealth = int.Parse(lines[++i]);
-                        Entities.Add(hm);
-                    }
-                }
-            } catch (Exception e) {
-                Console.WriteLine("Save file format is incorrect.");
-                Console.WriteLine(e.Message);
-            }
+            XMLHandler.readSaveFile(this);
         }
 
         public override void tick() {
@@ -158,39 +103,39 @@ namespace TAC {
             if (player.Health <= 0)
                 //end game
 
-            map1.tick();
+            map.tick();
 
             gameCameraOffset.X = (int)(player.X + 16 - (Game.displayWidth / 2));
             gameCameraOffset.Y = (int)(player.Y + 16 - (Game.displayHeight / 2));
             if (gameCameraOffset.X < 0) gameCameraOffset.X = 0;
             if (gameCameraOffset.Y < 0) gameCameraOffset.Y = 0;
-            if (gameCameraOffset.X > (map1.Width * 32) - Game.displayWidth) gameCameraOffset.X = (int)((map1.Width * 32) - Game.displayWidth);
-            if (gameCameraOffset.Y > (map1.Height * 32) - Game.displayHeight) gameCameraOffset.Y = (int)((map1.Height * 32) - Game.displayHeight);
+            if (gameCameraOffset.X > (map.Width * 32) - Game.displayWidth) gameCameraOffset.X = (int)((map.Width * 32) - Game.displayWidth);
+            if (gameCameraOffset.Y > (map.Height * 32) - Game.displayHeight) gameCameraOffset.Y = (int)((map.Height * 32) - Game.displayHeight);
 
             //Sort entities by Y value, to give 3D effect
             Entities.Sort(Comparer<Entity>.Create((e1, e2) => e1.Y.CompareTo(e2.Y)));
 
             //Tick all entities, then spawn corpse if needed
             StorageHovering = false;
+
             for (int i = 0; i < Entities.Count; i++) {
 
                 if (Entities[i].Health <= 0 && Entities[i].IsKillable) {
-                    Corpse c = new Corpse(new Vector2f(Entities[i].X, Entities[i].Y));
+                    Corpse c = new Corpse(Entities[i].X, Entities[i].Y);
                     c.inventory = Entities[i].inventory;
                     Entities[i] = c;
                 }
+
                 Entities[i].tick();
-
-                if (Entities[i].Hovered && Entities[i] is StorageEntity)
-                    StorageHovering = true;
-
-                if (Entities[i] == player)
-                    continue;
-
-                //Interaction
 
                 float currentEntityDeltaX = Entities[i].X - player.X;
                 float currentEntityDeltaY = Entities[i].Y - player.Y;
+                if (Entities[i].Hovered && Entities[i] is StorageEntity && Entities[i].inventory.Items.Count > 0 && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) < player.InteractionRange)
+                    StorageHovering = true;
+
+                //Interaction
+                if (Entities[i] == player)
+                    continue;
 
                 if (StorageHovering && !StorageInventoryActive && MouseHandler.RightPressed && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) < player.InteractionRange) {
                     StorageInventoryActive = true;
@@ -221,7 +166,7 @@ namespace TAC {
         }
 
         public override void render(RenderWindow window) {
-            map1.render(window, gameCameraOffset);
+            map.render(window, gameCameraOffset);
             
             //Render ground based items first, so they're under everything
             foreach(GroundItem g in Items) {
