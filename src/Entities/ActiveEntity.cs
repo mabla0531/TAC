@@ -55,9 +55,8 @@ namespace TAC {
             };
         }
 
-        protected void attack(ActiveEntity e, float angle) {
-            e.hurt(attackAlpha);
-
+        protected void attack(ActiveEntity e, float angle, int damage) {
+            e.hurt(damage);
             knockback(e, angle, 32.0f);
         }
 

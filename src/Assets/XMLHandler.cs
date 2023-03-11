@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace TAC {
 
-    public class Node {
+    class Node {
         public string Name {get; set;}
         public List<string> Attributes {get; set;} = new List<string>();
         public List<Node> Subnodes {get; set;} = new List<Node>();
@@ -232,6 +232,8 @@ namespace TAC {
                             HostileMob hostileMob = new HostileMob(float.Parse(n.Attributes[0]), float.Parse(n.Attributes[1]));
                             hostileMob.MaxHealth = int.Parse(n.Attributes[2]);
                             hostileMob.Health = int.Parse(n.Attributes[3]);
+                            hostileMob.DisplayHealth = hostileMob.Health;
+
                             if (n.Subnodes.Count > 0) {
                                 foreach (Node itemNode in n.Subnodes) {
                                     if (itemNode.Name != "Item")
@@ -246,6 +248,7 @@ namespace TAC {
                             Corpse corpse = new Corpse(float.Parse(n.Attributes[0]), float.Parse(n.Attributes[1]));
                             corpse.MaxHealth = int.Parse(n.Attributes[2]);
                             corpse.Health = int.Parse(n.Attributes[3]);
+
                             if (n.Subnodes.Count > 0) {
                                 foreach (Node itemNode in n.Subnodes) {
                                     if (itemNode.Name != "Item")

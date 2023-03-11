@@ -59,7 +59,7 @@ namespace TAC {
 
                 //attack player
                 if (distanceToPlayer < InteractionRange && attackCooldown.ElapsedTime.AsMilliseconds() >= attackInterval) {
-                    attack(Handler.gameState.player, angle);
+                    attack(Handler.gameState.player, angle, attackAlpha);
                     attackCooldown.Restart();
                 }
 
@@ -104,8 +104,8 @@ namespace TAC {
 
         public override void hurt(int damage) {
             Health -= damage;
+            Handler.gameState.DamageNumbers.Add(new DamageNumber(X + 16.0f, Y - 8.0f, damage));
             Assets.grrr.Play();
         }
-
     }
 }

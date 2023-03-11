@@ -15,10 +15,10 @@ namespace TAC {
         public Player player {get; set;}
         public List<Entity> Entities {get; set;}
         public List<GroundItem> Items {get; set;}
+        public List<DamageNumber> DamageNumbers {get; set;}
         public Vector2f gameCameraOffset;
         public bool Paused {get; set;}
         private bool pauseKeyPressed;
-        private GroundItem itemToPickUp = null;
         public bool StorageHovering {get; set;} = false;
         private StorageInventory storageInventory;
         public bool StorageInventoryActive {get; set;} = false;
@@ -38,11 +38,14 @@ namespace TAC {
         public GameState() : base() {
             map = new Map("res/maps/test.map");
             currentMap = map;
+
             player = new Player(100.0f, 100.0f);
             Entities = new List<Entity>();
             Entities.Add(player);
 
             Items = new List<GroundItem>();
+
+            DamageNumbers = new List<DamageNumber>();
 
             gameCameraOffset = new Vector2f(0, 0);
 
@@ -148,7 +151,7 @@ namespace TAC {
                 StorageInventoryActive = false;
 
             //Tick ground based items
-            itemToPickUp = null;
+            GroundItem itemToPickUp = null;
             foreach(GroundItem g in Items) {
                 if (MouseHandler.RightPressed && g.Hovered) {
                     Handler.gameState.player.inventory.Items.Add(g.ItemReference);
@@ -179,6 +182,16 @@ namespace TAC {
 
             foreach (GroundItem g in Items) {
                 g.renderTooltip(window); //Put tooltips above everything else so character doesn't walk over it
+            }
+
+            List<DamageNumber> damageNumbersToRemove = new List<DamageNumber>();
+            foreach (DamageNumber damageNumber in DamageNumbers) {
+                if (damageNumber.Finished) {
+                    damageNumbersToRemove.Add(damageNumber);
+                    continue;
+                }
+
+                damageNumber.render(window);
             }
 
             if (Paused) {

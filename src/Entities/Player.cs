@@ -159,8 +159,10 @@ namespace TAC {
 
                         attackCooldown.Restart();
                         if (e != this && Math.Abs(mouseAngle - currentEntityAngle) < 0.2f && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) <= InteractionRange) {
-                            attack((ActiveEntity)e, currentEntityAngle);
-                            
+                            int damage = attackAlpha;
+                            if (Hand != null) damage += Hand.Attack;
+
+                            attack((ActiveEntity)e, currentEntityAngle, damage);
                             Assets.slice.Play();
                         }
                     }
@@ -190,7 +192,8 @@ namespace TAC {
         }
 
         public override void hurt(int damage) {
-            Health -= (damage + Hand.Attack);
+            Health -= damage;
+            Handler.gameState.DamageNumbers.Add(new DamageNumber(X + 16.0f, Y - 8.0f, damage));
         }
     }
 }
