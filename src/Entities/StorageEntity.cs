@@ -1,6 +1,3 @@
-using SFML.System;
-using SFML.Graphics;
-
 namespace TAC {
     abstract class StorageEntity : Entity {
         

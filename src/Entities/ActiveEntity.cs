@@ -76,6 +76,8 @@ namespace TAC {
             movingCollisionBoundsY.Top  += moveY;
             movingCollisionBounds.Left += moveX;
             movingCollisionBounds.Top  += moveY;
+
+            //entity collision
             foreach (Entity e in Handler.gameState.Entities) {
                 if (e != this && e.getCollisionBounds().Intersects(movingCollisionBoundsX)) {
                     moveX = 0.0f;
@@ -85,6 +87,7 @@ namespace TAC {
                 }
             }
 
+            //tile collision
             if (((GameState.currentMap.SolidTiles.Contains(GameState.currentMap.getTileByCoords((int)(movingCollisionBounds.Left), (int)(collisionBounds.Top))) || 
                   GameState.currentMap.SolidTiles.Contains(GameState.currentMap.getTileByCoords((int)(movingCollisionBounds.Left), (int)(collisionBounds.Top + collisionBounds.Height)))) && moveX < 0.0f) || 
                 ((GameState.currentMap.SolidTiles.Contains(GameState.currentMap.getTileByCoords((int)(movingCollisionBounds.Left + collisionBounds.Width), (int)(collisionBounds.Top))) || 

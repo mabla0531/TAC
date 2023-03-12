@@ -5,7 +5,6 @@
  */
 
 using SFML.Graphics;
-using SFML.System;
 
 namespace TAC {
     class Corpse : StorageEntity {

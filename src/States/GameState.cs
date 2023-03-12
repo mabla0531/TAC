@@ -2,9 +2,7 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 using System.Collections.Generic;
-using System.IO;
 using System;
-using System.Xml;
 
 namespace TAC {
 
@@ -35,7 +33,7 @@ namespace TAC {
         private Sprite storageIcon;
 
 
-        public GameState() : base() {
+        public GameState(Game game) : base() {
             map = new Map("res/maps/test.map");
             currentMap = map;
 
@@ -66,10 +64,10 @@ namespace TAC {
 
             resume.onClick   += (sender, e) => { Paused = false; };
             save.onClick     += (sender, e) => { saveGame(); };
-            settings.onClick += (sender, e) => { Handler.game.showSettings(); };
+            settings.onClick += (sender, e) => { game.showSettings(); };
             quit.onClick     += (sender, e) => {
                 Paused = false;
-                Handler.game.popState();
+                game.popState();
             };
 
             hud = new HUD(player);

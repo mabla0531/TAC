@@ -60,6 +60,10 @@ namespace TAC {
             dropButton = new Button("Drop", new Vector2f(inventoryBG.Position.X + 8.0f, inventoryBG.Position.Y + inventoryBG.Size.Y - 50.0f));
             
             equipButton.onClick += (sender, e) => {
+                if (player.inventory.Items.Count <= 0) //if inventory is empty, don't do anything
+                
+                    return;
+
                 player.inventory.Items[index].Equipped = !player.inventory.Items[index].Equipped;
                 Item i = player.inventory.Items[index];
                 

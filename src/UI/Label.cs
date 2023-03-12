@@ -1,6 +1,5 @@
 using SFML.Graphics;
 using SFML.System;
-using System;
 
 namespace TAC {
     class Label {

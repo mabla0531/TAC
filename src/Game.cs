@@ -44,7 +44,7 @@ namespace TAC {
         }
 
         public void showSettings() {
-            states.Push(new SettingsState());
+            states.Push(new SettingsState(this));
         }
 
         public void popState() {
@@ -94,7 +94,8 @@ namespace TAC {
 
         private void initDisplay() {
 
-            window = new RenderWindow((SettingsState.Fullscreen ? VideoMode.DesktopMode : new VideoMode(windowedWidth, windowedHeight)), "The Alpha Chronicles", (SettingsState.Fullscreen ? Styles.Fullscreen : Styles.Default));
+            window = new RenderWindow((SettingsState.Fullscreen ? VideoMode.DesktopMode : new VideoMode(windowedWidth, windowedHeight)), "The Alpha Chronicles", (SettingsState.Fullscreen ? Styles.Fullscreen : Styles.Default) & Styles.Resize & Styles.Titlebar);
+            
             displayWidth = SettingsState.Fullscreen ? VideoMode.DesktopMode.Width : windowedWidth;
             displayHeight = SettingsState.Fullscreen ? VideoMode.DesktopMode.Height : windowedHeight;
 
@@ -129,7 +130,7 @@ namespace TAC {
             Assets.init();
             defaultCursor = new Cursor(Assets.cursorData, new Vector2u(12, 17), new Vector2u(0, 0));
             initDisplay();
-            gameState = new GameState();
+            gameState = new GameState(this);
             Handler.gameState = gameState;
             mainMenuState = new MainMenuState(this);
             states = new Stack<State>();
@@ -138,7 +139,6 @@ namespace TAC {
 
         static void Main(string[] args) {
             Game game = new Game();
-            Handler.game = game;
 
             game.init();
             game.run();
