@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <Save>
-    <Map Name="test" />
+    <Map Name="center" />
     <Player X="416.51337" Y="705.3061" MaxHealth="10" Health="10" MaxStamina="100" Stamina="47">
         <Hand />
         <Offhand />

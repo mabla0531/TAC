@@ -88,16 +88,16 @@ namespace TAC {
             }
 
             //tile collision
-            if (((GameState.currentMap.SolidTiles.Contains(GameState.currentMap.getTileByCoords((int)(movingCollisionBounds.Left), (int)(collisionBounds.Top))) || 
-                  GameState.currentMap.SolidTiles.Contains(GameState.currentMap.getTileByCoords((int)(movingCollisionBounds.Left), (int)(collisionBounds.Top + collisionBounds.Height)))) && moveX < 0.0f) || 
-                ((GameState.currentMap.SolidTiles.Contains(GameState.currentMap.getTileByCoords((int)(movingCollisionBounds.Left + collisionBounds.Width), (int)(collisionBounds.Top))) || 
-                  GameState.currentMap.SolidTiles.Contains(GameState.currentMap.getTileByCoords((int)(movingCollisionBounds.Left + collisionBounds.Width), (int)(collisionBounds.Top + collisionBounds.Height)))) && moveX > 0.0f)) {
+            if (((Handler.gameState.map.SolidTiles.Contains(Handler.gameState.map.getTileByCoords((int)(movingCollisionBounds.Left), (int)(collisionBounds.Top))) || 
+                  Handler.gameState.map.SolidTiles.Contains(Handler.gameState.map.getTileByCoords((int)(movingCollisionBounds.Left), (int)(collisionBounds.Top + collisionBounds.Height)))) && moveX < 0.0f) || 
+                ((Handler.gameState.map.SolidTiles.Contains(Handler.gameState.map.getTileByCoords((int)(movingCollisionBounds.Left + collisionBounds.Width), (int)(collisionBounds.Top))) || 
+                  Handler.gameState.map.SolidTiles.Contains(Handler.gameState.map.getTileByCoords((int)(movingCollisionBounds.Left + collisionBounds.Width), (int)(collisionBounds.Top + collisionBounds.Height)))) && moveX > 0.0f)) {
                 moveX = 0.0f;
             }
-            if (((GameState.currentMap.SolidTiles.Contains(GameState.currentMap.getTileByCoords((int)(collisionBounds.Left), (int)(movingCollisionBounds.Top))) || 
-                  GameState.currentMap.SolidTiles.Contains(GameState.currentMap.getTileByCoords((int)(collisionBounds.Left + collisionBounds.Width), (int)(movingCollisionBounds.Top)))) && moveY < 0.0f) ||
-                ((GameState.currentMap.SolidTiles.Contains(GameState.currentMap.getTileByCoords((int)(collisionBounds.Left), (int)(movingCollisionBounds.Top + collisionBounds.Height))) || 
-                  GameState.currentMap.SolidTiles.Contains(GameState.currentMap.getTileByCoords((int)(collisionBounds.Left + collisionBounds.Width), (int)(movingCollisionBounds.Top + collisionBounds.Height)))) && moveY > 0.0f)) {
+            if (((Handler.gameState.map.SolidTiles.Contains(Handler.gameState.map.getTileByCoords((int)(collisionBounds.Left), (int)(movingCollisionBounds.Top))) || 
+                  Handler.gameState.map.SolidTiles.Contains(Handler.gameState.map.getTileByCoords((int)(collisionBounds.Left + collisionBounds.Width), (int)(movingCollisionBounds.Top)))) && moveY < 0.0f) ||
+                ((Handler.gameState.map.SolidTiles.Contains(Handler.gameState.map.getTileByCoords((int)(collisionBounds.Left), (int)(movingCollisionBounds.Top + collisionBounds.Height))) || 
+                  Handler.gameState.map.SolidTiles.Contains(Handler.gameState.map.getTileByCoords((int)(collisionBounds.Left + collisionBounds.Width), (int)(movingCollisionBounds.Top + collisionBounds.Height)))) && moveY > 0.0f)) {
                 moveY = 0.0f;
             }
         }

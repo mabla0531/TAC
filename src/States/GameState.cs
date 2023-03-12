@@ -9,7 +9,6 @@ namespace TAC {
     class GameState : State {
         
         public Map map {get; set;}
-        public static Map currentMap;
         public Player player {get; set;}
         public List<Entity> Entities {get; set;}
         public List<GroundItem> Items {get; set;}
@@ -34,8 +33,7 @@ namespace TAC {
 
 
         public GameState(Game game) : base() {
-            map = new Map("res/maps/test.map");
-            currentMap = map;
+            map = new Map("res/maps/center.map");
 
             player = new Player(100.0f, 100.0f);
             Entities = new List<Entity>();
@@ -84,7 +82,15 @@ namespace TAC {
         }
 
         public override void tick() {
-            
+            //handle all transition tile
+            foreach(Transition transition in map.Transitions) {
+                if (player.getCollisionBounds().Intersects(new FloatRect(transition.X * 32.0f, transition.Y * 32.0f, 32.0f, 32.0f))) {
+                    player.X = transition.TransitionX * 32.0f;
+                    player.Y = transition.TransitionY * 32.0f;
+                    map = new Map("res/maps/" + transition.MapName + ".map");
+                }
+            }
+
             if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) && !pauseKeyPressed) {
                 pauseKeyPressed = true;
                 Paused = !Paused;
@@ -108,10 +114,10 @@ namespace TAC {
 
             gameCameraOffset.X = (int)(player.X + 16 - (Game.displayWidth / 2));
             gameCameraOffset.Y = (int)(player.Y + 16 - (Game.displayHeight / 2));
-            if (gameCameraOffset.X < 0) gameCameraOffset.X = 0;
-            if (gameCameraOffset.Y < 0) gameCameraOffset.Y = 0;
             if (gameCameraOffset.X > (map.Width * 32) - Game.displayWidth) gameCameraOffset.X = (int)((map.Width * 32) - Game.displayWidth);
             if (gameCameraOffset.Y > (map.Height * 32) - Game.displayHeight) gameCameraOffset.Y = (int)((map.Height * 32) - Game.displayHeight);
+            if (gameCameraOffset.X < 0) gameCameraOffset.X = 0;
+            if (gameCameraOffset.Y < 0) gameCameraOffset.Y = 0;
 
             //Sort entities by Y value, to give 3D effect
             Entities.Sort(Comparer<Entity>.Create((e1, e2) => e1.Y.CompareTo(e2.Y)));
@@ -215,7 +221,7 @@ namespace TAC {
             }
 
             if (StorageInventoryActive) {
-                //                                      Because of text rendering system, if X/Y are decimal point numbers text is gross and blurry
+                //                                      Because of text rendering system, if X/Y are decimal point numbers it causes text to be gross and blurry
                 storageInventory.Position = new Vector2f((int)(storageInventory.entity.X - gameCameraOffset.X), (int)(storageInventory.entity.Y - gameCameraOffset.Y));
                 storageInventory.render(window);
             }

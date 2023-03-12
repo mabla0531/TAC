@@ -23,7 +23,7 @@ namespace TAC {
             hudHeight = 96.0f;
 
             hudFrame = new RectangleShape(new Vector2f(hudWidth, hudHeight));
-            hudFrame.Position = new Vector2f((Game.displayWidth / 2) - (hudWidth / 2), Game.displayHeight - hudHeight);
+            hudFrame.Position = new Vector2f(0.0f, Game.displayHeight - hudHeight);
             hudFrame.FillColor = new Color(36, 58, 71, 230);
             gb = new GaussianBlur((int)hudWidth, (int)hudHeight);
 
@@ -41,7 +41,7 @@ namespace TAC {
         }
 
         public void render(RenderWindow window) {
-            hudFrame.Position = new Vector2f((Game.displayWidth / 2) - (hudWidth / 2), Game.displayHeight - hudHeight);
+            hudFrame.Position = new Vector2f(0.0f, Game.displayHeight - hudHeight);
             gb.blurArea((int)hudFrame.Position.X, (int)hudFrame.Position.Y, window);
             window.Draw(hudFrame);
 
