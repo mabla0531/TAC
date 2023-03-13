@@ -129,7 +129,7 @@ namespace TAC {
                     }
                     
                     player.inventory.Items[index].Equipped = false;
-                    Handler.gameState.Items.Add(new GroundItem(player.inventory.Items[index], player.X, player.Y));
+                    Handler.gameState.CurrentMap.Items.Add(new GroundItem(player.inventory.Items[index], player.X, player.Y));
                     player.inventory.Items.Remove(player.inventory.Items[index]);
                 }
             };

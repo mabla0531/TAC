@@ -39,8 +39,7 @@ namespace TAC {
             };
 
             render += (RenderWindow window) => {
-                EntitySprite.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X, Y - Handler.gameState.gameCameraOffset.Y);
-                window.Draw(EntitySprite);
+                
             };
         }
 

@@ -1,0 +1,6 @@
+
+namespace TAC {
+    class MapGenerator {
+        
+    }
+}

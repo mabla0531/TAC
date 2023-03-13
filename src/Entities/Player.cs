@@ -149,7 +149,7 @@ namespace TAC {
                 if (MouseHandler.LeftButton && attackCooldown.ElapsedTime.AsMilliseconds() >= attackInterval && !inventoryInterface.Active && !Handler.gameState.StorageInventoryActive) {
                     Assets.swish.Play();
 
-                    foreach (Entity e in Handler.gameState.Entities) {
+                    foreach (Entity e in Handler.gameState.CurrentMap.Entities) {
                         if (!(e is ActiveEntity))
                             continue;
 
@@ -182,8 +182,8 @@ namespace TAC {
                 aimAngle.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X + 16.0f, Y - Handler.gameState.gameCameraOffset.Y + 20.0f);
                 window.Draw(aimAngle);
 
-                cooldownBarBackground.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X + 8, Y - Handler.gameState.gameCameraOffset.Y + 34);
-                cooldownBar.Position = new Vector2f(X - Handler.gameState.gameCameraOffset.X + 9, Y - Handler.gameState.gameCameraOffset.Y + 35);
+                cooldownBarBackground.Position = new Vector2f((int)(X - Handler.gameState.gameCameraOffset.X + 8), (int)(Y - Handler.gameState.gameCameraOffset.Y + 34));
+                cooldownBar.Position = new Vector2f((int)(X - Handler.gameState.gameCameraOffset.X + 9), (int)(Y - Handler.gameState.gameCameraOffset.Y + 35));
                 window.Draw(cooldownBarBackground);
                 window.Draw(cooldownBar);
 

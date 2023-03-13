@@ -8,10 +8,9 @@ namespace TAC {
 
     class GameState : State {
         
-        public Map map {get; set;}
         public Player player {get; set;}
-        public List<Entity> Entities {get; set;}
-        public List<GroundItem> Items {get; set;}
+        public List<Map> Maps {get; set;}
+        public Map CurrentMap {get; set;}
         public List<DamageNumber> DamageNumbers {get; set;}
         public Vector2f gameCameraOffset;
         public bool Paused {get; set;}
@@ -33,13 +32,9 @@ namespace TAC {
 
 
         public GameState(Game game) : base() {
-            map = new Map("res/maps/center.map");
-
             player = new Player(100.0f, 100.0f);
-            Entities = new List<Entity>();
-            Entities.Add(player);
 
-            Items = new List<GroundItem>();
+            Maps = new List<Map>();
 
             DamageNumbers = new List<DamageNumber>();
 
@@ -79,15 +74,27 @@ namespace TAC {
 
         public void loadGame() {
             XMLHandler.readSaveFile(this);
+
+            if (Maps.Count > 0)
+                CurrentMap = Maps[0];
+            CurrentMap.Entities.Add(player);
         }
 
         public override void tick() {
             //handle all transition tile
-            foreach(Transition transition in map.Transitions) {
-                if (player.getCollisionBounds().Intersects(new FloatRect(transition.X * 32.0f, transition.Y * 32.0f, 32.0f, 32.0f))) {
-                    player.X = transition.TransitionX * 32.0f;
-                    player.Y = transition.TransitionY * 32.0f;
-                    map = new Map("res/maps/" + transition.MapName + ".map");
+            foreach(Transition transition in CurrentMap.Transitions) {
+                if (!player.getCollisionBounds().Intersects(new FloatRect(transition.X * 32.0f, transition.Y * 32.0f, 32.0f, 32.0f)))
+                    continue;
+
+                player.X = transition.TransitionX * 32.0f;
+                player.Y = transition.TransitionY * 32.0f;
+                foreach(Map map in Maps) {
+                    if (map.MapName == transition.MapName) {
+                        Console.WriteLine("Setting map to " + map.MapName);
+                        CurrentMap.Entities.Remove(player);
+                        CurrentMap = map;    
+                        CurrentMap.Entities.Add(player);
+                    }
                 }
             }
 
@@ -100,6 +107,7 @@ namespace TAC {
                 pauseKeyPressed = false;
 
             if (Paused) {
+                //tick buttons
                 resume.tick();
                 save.tick();
                 settings.tick();
@@ -110,44 +118,46 @@ namespace TAC {
             if (player.Health <= 0)
                 //end game
 
-            map.tick();
+            CurrentMap.tick();
 
             gameCameraOffset.X = (int)(player.X + 16 - (Game.displayWidth / 2));
             gameCameraOffset.Y = (int)(player.Y + 16 - (Game.displayHeight / 2));
-            if (gameCameraOffset.X > (map.Width * 32) - Game.displayWidth) gameCameraOffset.X = (int)((map.Width * 32) - Game.displayWidth);
-            if (gameCameraOffset.Y > (map.Height * 32) - Game.displayHeight) gameCameraOffset.Y = (int)((map.Height * 32) - Game.displayHeight);
+            if (gameCameraOffset.X > (CurrentMap.Width * 32) - Game.displayWidth) gameCameraOffset.X = (int)((CurrentMap.Width * 32) - Game.displayWidth);
+            if (gameCameraOffset.Y > (CurrentMap.Height * 32) - Game.displayHeight) gameCameraOffset.Y = (int)((CurrentMap.Height * 32) - Game.displayHeight);
             if (gameCameraOffset.X < 0) gameCameraOffset.X = 0;
             if (gameCameraOffset.Y < 0) gameCameraOffset.Y = 0;
+            if ((CurrentMap.Width * 32.0f) < Game.displayWidth) gameCameraOffset.X = ((CurrentMap.Width * 32.0f) / 2) - (Game.displayWidth / 2);
+            if ((CurrentMap.Height * 32.0f) < Game.displayHeight) gameCameraOffset.Y = ((CurrentMap.Height * 32.0f) / 2) - (Game.displayHeight / 2);
 
             //Sort entities by Y value, to give 3D effect
-            Entities.Sort(Comparer<Entity>.Create((e1, e2) => e1.Y.CompareTo(e2.Y)));
+            CurrentMap.Entities.Sort(Comparer<Entity>.Create((e1, e2) => e1.Y.CompareTo(e2.Y)));
 
             //Tick all entities, then spawn corpse if needed
             StorageHovering = false;
 
-            for (int i = 0; i < Entities.Count; i++) {
+            for (int i = 0; i < CurrentMap.Entities.Count; i++) {
 
-                if (Entities[i].Health <= 0 && Entities[i].IsKillable) {
-                    Corpse c = new Corpse(Entities[i].X, Entities[i].Y);
-                    c.inventory = Entities[i].inventory;
-                    Entities[i] = c;
+                if (CurrentMap.Entities[i].Health <= 0 && CurrentMap.Entities[i].IsKillable) {
+                    Corpse c = new Corpse(CurrentMap.Entities[i].X, CurrentMap.Entities[i].Y);
+                    c.inventory = CurrentMap.Entities[i].inventory;
+                    CurrentMap.Entities[i] = c;
                 }
 
-                Entities[i].tick();
+                CurrentMap.Entities[i].tick();
 
-                float currentEntityDeltaX = Entities[i].X - player.X;
-                float currentEntityDeltaY = Entities[i].Y - player.Y;
-                if (Entities[i].Hovered && Entities[i] is StorageEntity && Entities[i].inventory.Items.Count > 0 && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) < player.InteractionRange)
+                float currentEntityDeltaX = CurrentMap.Entities[i].X - player.X;
+                float currentEntityDeltaY = CurrentMap.Entities[i].Y - player.Y;
+                if (CurrentMap.Entities[i].Hovered && CurrentMap.Entities[i] is StorageEntity && CurrentMap.Entities[i].inventory.Items.Count > 0 && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) < player.InteractionRange)
                     StorageHovering = true;
 
                 //Interaction
-                if (Entities[i] == player)
+                if (CurrentMap.Entities[i] == player)
                     continue;
 
                 if (StorageHovering && !StorageInventoryActive && MouseHandler.RightPressed && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) < player.InteractionRange) {
                     StorageInventoryActive = true;
                     storageInventory.Position = new Vector2f(MouseHandler.MouseX, MouseHandler.MouseY);
-                    storageInventory.entity = (StorageEntity)Entities[i];
+                    storageInventory.entity = (StorageEntity)CurrentMap.Entities[i];
                 }
             }
 
@@ -156,7 +166,7 @@ namespace TAC {
 
             //Tick ground based items
             GroundItem itemToPickUp = null;
-            foreach(GroundItem g in Items) {
+            foreach(GroundItem g in CurrentMap.Items) {
                 if (MouseHandler.RightPressed && g.Hovered) {
                     Handler.gameState.player.inventory.Items.Add(g.ItemReference);
                     itemToPickUp = g;
@@ -166,25 +176,25 @@ namespace TAC {
             }
 
             if (itemToPickUp != null)
-                Items.Remove(itemToPickUp); //Time travel would have been invented if we could remove a list member during iteration
+                CurrentMap.Items.Remove(itemToPickUp); //Time travel would have been invented if we could remove a list member during iteration
 
             if (StorageInventoryActive)
                     storageInventory.tick();
         }
 
         public override void render(RenderWindow window) {
-            map.render(window, gameCameraOffset);
+            CurrentMap.render(window, gameCameraOffset);
             
             //Render ground based items first, so they're under everything
-            foreach(GroundItem g in Items) {
+            foreach(GroundItem g in CurrentMap.Items) {
                 g.render(window);
             }
 
-            foreach (Entity e in Entities) {
+            foreach (Entity e in CurrentMap.Entities) {
                 e.render(window);
             }
 
-            foreach (GroundItem g in Items) {
+            foreach (GroundItem g in CurrentMap.Items) {
                 g.renderTooltip(window); //Put tooltips above everything else so character doesn't walk over it
             }
 

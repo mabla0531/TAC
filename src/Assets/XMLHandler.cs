@@ -36,9 +36,6 @@ namespace TAC {
             writer.Formatting = Formatting.Indented;
             writer.Indentation = 4;
             writer.WriteStartElement("Save");
-            writer.WriteStartElement("Map");
-            writer.WriteAttributeString("Name", "test");
-            writer.WriteEndElement();
 
             //begin player node
             writer.WriteStartElement("Player");
@@ -74,46 +71,54 @@ namespace TAC {
             writer.WriteEndElement();
             //end player node
             
-            //begin entity nodes
-            writer.WriteStartElement("Entities");
-            foreach(Entity e in gameState.Entities) {
-                if (e == gameState.player) //don't write player to save file as an entity
-                    continue;
+            //begin map nodes
+            foreach (Map map in gameState.Maps) {
+                writer.WriteStartElement("Map");
+                writer.WriteAttributeString("Name", map.MapName); //TODO: make the map hold entities
+                
+                //begin entity nodes
+                writer.WriteStartElement("Entities");
+                foreach(Entity e in map.Entities) {
+                    if (e == gameState.player) //don't write player to save file as an entity
+                        continue;
 
-                string type = e.GetType().ToString().Substring(4);
-                writer.WriteStartElement(type);
-                writer.WriteAttributeString("X", e.X.ToString());
-                writer.WriteAttributeString("Y", e.Y.ToString());
-                writer.WriteAttributeString("MaxHealth", e.MaxHealth.ToString());
-                writer.WriteAttributeString("Health", e.Health.ToString());
+                    string type = e.GetType().ToString().Substring(4); //get type without namespace "TAC."
+                    writer.WriteStartElement(type);
+                    writer.WriteAttributeString("X", e.X.ToString());
+                    writer.WriteAttributeString("Y", e.Y.ToString());
+                    writer.WriteAttributeString("MaxHealth", e.MaxHealth.ToString());
+                    writer.WriteAttributeString("Health", e.Health.ToString());
 
-                foreach (Item i in e.inventory.Items) {
-                    writeItem(writer, i);
+                    foreach (Item i in e.inventory.Items) {
+                        writeItem(writer, i);
+                    }
+
+                    writer.WriteEndElement();
                 }
+                //grounditems are stored in a separate list, but are still entities
+                foreach (GroundItem g in map.Items) {
 
+                    writer.WriteStartElement("GroundItem");
+                    writer.WriteAttributeString("X", g.X.ToString());
+                    writer.WriteAttributeString("Y", g.Y.ToString());
+                    Item i = g.ItemReference;
+                    writer.WriteAttributeString("Weight",  i.Weight.ToString());
+                    writer.WriteAttributeString("Value",   i.Value.ToString());
+                    writer.WriteAttributeString("Name",    i.Name);
+                    writer.WriteAttributeString("Attack",  i.Attack.ToString());
+                    writer.WriteAttributeString("Defense", i.Defense.ToString());
+                    writer.WriteAttributeString("Health",  i.Health.ToString());
+                    writer.WriteAttributeString("Stamina", i.Stamina.ToString());
+                    writer.WriteAttributeString("Sprite",  i.Icon.TextureRect.Left + " " + i.Icon.TextureRect.Top + " " + i.Icon.TextureRect.Width + " " + i.Icon.TextureRect.Height);
+                    writer.WriteAttributeString("Rarity",  i.ItemRarity.ToString());
+                    writer.WriteAttributeString("Slot",    i.ItemSlot.ToString());
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement();
+                //end entity nodes
                 writer.WriteEndElement();
             }
-            //grounditems are stored in a separate list, but are still entities
-            foreach (GroundItem g in gameState.Items) {
-
-                writer.WriteStartElement("GroundItem");
-                writer.WriteAttributeString("X", g.X.ToString());
-                writer.WriteAttributeString("Y", g.Y.ToString());
-                Item i = g.ItemReference;
-                writer.WriteAttributeString("Weight", i.Weight.ToString());
-                writer.WriteAttributeString("Value", i.Value.ToString());
-                writer.WriteAttributeString("Name", i.Name);
-                writer.WriteAttributeString("Attack", i.Attack.ToString());
-                writer.WriteAttributeString("Defense", i.Defense.ToString());
-                writer.WriteAttributeString("Health", i.Health.ToString());
-                writer.WriteAttributeString("Stamina", i.Stamina.ToString());
-                writer.WriteAttributeString("Sprite", i.Icon.TextureRect.Left + " " + i.Icon.TextureRect.Top + " " + i.Icon.TextureRect.Width + " " + i.Icon.TextureRect.Height);
-                writer.WriteAttributeString("Rarity", i.ItemRarity.ToString());
-                writer.WriteAttributeString("Slot", i.ItemSlot.ToString());
-                writer.WriteEndElement();
-            }
-            writer.WriteEndElement();
-            //end entity nodes
+            //end map node
 
             writer.WriteEndElement();
             writer.WriteEndDocument();
@@ -130,13 +135,15 @@ namespace TAC {
 
             if (reader.IsEmptyElement)
                 return node;
-
+            
+            //read subnodes
             while (reader.NodeType != XmlNodeType.EndElement) {
                 reader.Read();
                 if (reader.NodeType == XmlNodeType.Element) {
                     node.Subnodes.Add(readNode(reader));
                 }
             }
+            
             return node;
         }
 
@@ -190,10 +197,6 @@ namespace TAC {
             }
 
             foreach (Node node in nodes) {
-                if (node.Name == "Map") {
-                    gameState.map = new Map("res/maps/" + node.Attributes[0] + ".map");
-                }
-
                 if (node.Name == "Player") {
                     gameState.player.X = float.Parse(node.Attributes[0]);
                     gameState.player.Y = float.Parse(node.Attributes[1]);
@@ -225,45 +228,51 @@ namespace TAC {
                         }
                     }
                 }
-
-                if (node.Name == "Entities") {
+                if (node.Name == "Map") {
+                    Map map = new Map(node.Attributes[0]);
                     foreach (Node n in node.Subnodes) {
-                        if (n.Name == "HostileMob") {
-                            HostileMob hostileMob = new HostileMob(float.Parse(n.Attributes[0]), float.Parse(n.Attributes[1]));
-                            hostileMob.MaxHealth = int.Parse(n.Attributes[2]);
-                            hostileMob.Health = int.Parse(n.Attributes[3]);
-                            hostileMob.DisplayHealth = hostileMob.Health;
+                        if (n.Name == "Entities") {
+                            foreach (Node entity in n.Subnodes) {
+                                if (entity.Name == "HostileMob") {
+                                    HostileMob hostileMob = new HostileMob(float.Parse(entity.Attributes[0]), float.Parse(entity.Attributes[1]));
+                                    hostileMob.MaxHealth = int.Parse(entity.Attributes[2]);
+                                    hostileMob.Health = int.Parse(entity.Attributes[3]);
+                                    hostileMob.DisplayHealth = hostileMob.Health;
 
-                            if (n.Subnodes.Count > 0) {
-                                foreach (Node itemNode in n.Subnodes) {
-                                    if (itemNode.Name != "Item")
-                                        continue;
-                                    hostileMob.inventory.Items.Add(parseItem(itemNode.Attributes));
+                                    if (entity.Subnodes.Count > 0) {
+                                        foreach (Node itemNode in entity.Subnodes) {
+                                            if (itemNode.Name != "Item")
+                                                continue;
+                                            hostileMob.inventory.Items.Add(parseItem(itemNode.Attributes));
+                                        }
+                                    }
+
+                                    map.Entities.Add(hostileMob);
+                                }
+
+                                if (entity.Name == "Corpse") {
+                                    Corpse corpse = new Corpse(float.Parse(entity.Attributes[0]), float.Parse(entity.Attributes[1]));
+                                    corpse.MaxHealth = int.Parse(entity.Attributes[2]);
+                                    corpse.Health = int.Parse(entity.Attributes[3]);
+
+                                    foreach (Node itemNode in entity.Subnodes) {
+                                        if (itemNode.Name != "Item")
+                                            continue;
+                                        corpse.inventory.Items.Add(parseItem(itemNode.Attributes));
+                                    }
+
+                                    map.Entities.Add(corpse);
+                                }
+
+                                if (entity.Name == "GroundItem") {
+                                    GroundItem groundItem = new GroundItem(parseItem(entity.Attributes.GetRange(2, entity.Attributes.Count - 2)), float.Parse(entity.Attributes[0]), float.Parse(entity.Attributes[1]));
+                                    map.Items.Add(groundItem);
                                 }
                             }
-                            gameState.Entities.Add(hostileMob);
-                        }
-
-                        if (n.Name == "Corpse") {
-                            Corpse corpse = new Corpse(float.Parse(n.Attributes[0]), float.Parse(n.Attributes[1]));
-                            corpse.MaxHealth = int.Parse(n.Attributes[2]);
-                            corpse.Health = int.Parse(n.Attributes[3]);
-
-                            if (n.Subnodes.Count > 0) {
-                                foreach (Node itemNode in n.Subnodes) {
-                                    if (itemNode.Name != "Item")
-                                        continue;
-                                    corpse.inventory.Items.Add(parseItem(itemNode.Attributes));
-                                }
-                            }
-                            gameState.Entities.Add(corpse);
-                        }
-
-                        if (n.Name == "GroundItem") {
-                            GroundItem groundItem = new GroundItem(parseItem(n.Attributes.GetRange(2, n.Attributes.Count - 2)), float.Parse(n.Attributes[0]), float.Parse(n.Attributes[1]));
-                            gameState.Items.Add(groundItem);
                         }
                     }
+                    
+                    gameState.Maps.Add(map);
                 }
             }
 

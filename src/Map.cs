@@ -26,54 +26,20 @@ namespace TAC {
 
     class Map {
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public string MapName {get; set;}
+        public int Width {get; set;}
+        public int Height {get; set;}
 
         public List<Sprite> tiles = new List<Sprite>();
-        public List<int> SolidTiles { get; set; }
+        public List<int> SolidTiles {get; set;}
         public List<Transition> Transitions {get; set;} = new List<Transition>();
+        public List<Entity> Entities {get; set;}
+        public List<GroundItem> Items {get; set;}
 
         public Sprite treeBorder1, treeBorder2, treeBorder3, treeBorder4;
         public Sprite transitionBorder1, transitionBorder2, transitionBorder3, transitionBorder4;
 
         public int[,] tileMap;
-
-        public void loadMap(string path) {
-            List<string> lines = new List<string>(File.ReadAllLines(path));
-            int startToken = 0;
-            do {
-                string[] lineTokens = lines[0].Split(' ');
-                startToken = int.Parse(lineTokens[0]);
-                if (startToken >= 30 && startToken <= 39) {
-                    Transitions.Add(new Transition(int.Parse(lineTokens[0]), lineTokens[1], int.Parse(lineTokens[2]), int.Parse(lineTokens[3]), int.Parse(lineTokens[4]), int.Parse(lineTokens[5])));
-                    lines.RemoveAt(0);
-                }
-            } while (startToken >= 30 && startToken <= 39);
-
-            Width = lines[0].Split(' ').Length;
-            Height = lines.Count;
-
-            tileMap = new int[Width, Height];
-
-            SolidTiles = new List<int>{99};
-
-            treeBorder1 = new Sprite(Assets.terrain, new IntRect(608, 448, 32, 32));
-            treeBorder2 = new Sprite(Assets.terrain, new IntRect(608, 480, 32, 32));
-            treeBorder3 = new Sprite(Assets.terrain, new IntRect(640, 448, 32, 32));
-            treeBorder4 = new Sprite(Assets.terrain, new IntRect(640, 480, 32, 32));
-
-            transitionBorder1 = new Sprite(Assets.terrain, new IntRect(672, 512, 32, 32));
-            transitionBorder2 = new Sprite(Assets.terrain, new IntRect(704, 512, 32, 32));
-            transitionBorder3 = new Sprite(Assets.terrain, new IntRect(672, 544, 32, 32));
-            transitionBorder4 = new Sprite(Assets.terrain, new IntRect(704, 544, 32, 32));
-
-            for (int x = 0; x < Width; x++) {
-                for (int y = 0; y < Height; y++) {
-                    string[] tokens = lines[y].Split(' ');
-                    tileMap[x, y] = int.Parse(tokens[x]);
-                }
-            }
-        }
 
         public void initTileSprites() {
             Sprite s = new Sprite(Assets.terrain);
@@ -137,9 +103,47 @@ namespace TAC {
             return tileMap[(int)(x / 32), (int)(y / 32)];
         }
 
-        public Map(string path) {
+        public Map(string name) {
             initTileSprites();
-            loadMap(path);
+            
+            Entities = new List<Entity>();
+            Items = new List<GroundItem>();
+            
+            MapName = name;
+            List<string> lines = new List<string>(File.ReadAllLines("./res/maps/" + MapName + ".map"));
+            int startToken = 0;
+            do {
+                string[] lineTokens = lines[0].Split(' ');
+                startToken = int.Parse(lineTokens[0]);
+                if (startToken >= 30 && startToken <= 39) {
+                    Transitions.Add(new Transition(int.Parse(lineTokens[0]), lineTokens[1], int.Parse(lineTokens[2]), int.Parse(lineTokens[3]), int.Parse(lineTokens[4]), int.Parse(lineTokens[5])));
+                    lines.RemoveAt(0);
+                }
+            } while (startToken >= 30 && startToken <= 39);
+
+            Width = lines[0].Split(' ').Length;
+            Height = lines.Count;
+
+            tileMap = new int[Width, Height];
+
+            SolidTiles = new List<int>{99};
+
+            treeBorder1 = new Sprite(Assets.terrain, new IntRect(608, 448, 32, 32));
+            treeBorder2 = new Sprite(Assets.terrain, new IntRect(608, 480, 32, 32));
+            treeBorder3 = new Sprite(Assets.terrain, new IntRect(640, 448, 32, 32));
+            treeBorder4 = new Sprite(Assets.terrain, new IntRect(640, 480, 32, 32));
+
+            transitionBorder1 = new Sprite(Assets.terrain, new IntRect(672, 512, 32, 32));
+            transitionBorder2 = new Sprite(Assets.terrain, new IntRect(704, 512, 32, 32));
+            transitionBorder3 = new Sprite(Assets.terrain, new IntRect(672, 544, 32, 32));
+            transitionBorder4 = new Sprite(Assets.terrain, new IntRect(704, 544, 32, 32));
+
+            for (int x = 0; x < Width; x++) {
+                for (int y = 0; y < Height; y++) {
+                    string[] tokens = lines[y].Split(' ');
+                    tileMap[x, y] = int.Parse(tokens[x]);
+                }
+            }
         }
 
         public void tick() {
