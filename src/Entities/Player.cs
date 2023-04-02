@@ -20,8 +20,7 @@ namespace TAC {
         private RectangleShape cooldownBarBackground, cooldownBar;
 
         //Inventory
-        private PlayerInventory inventoryInterface;
-        private bool inventoryKeyPressed = false;
+        private PlayerInventoryInterface inventoryInterface;
 
         public Item Head {get; set;}
         public Item Chest {get; set;}
@@ -73,18 +72,15 @@ namespace TAC {
             cooldownBar = new RectangleShape(new Vector2f(16, 2));
             cooldownBar.FillColor = new Color(32, 32, 32);
 
-            inventoryInterface = new PlayerInventory(this);
+            inventoryInterface = new PlayerInventoryInterface(this);
 
             tick += () => {
                 float mouseAngle;
 
-                if (!inventoryKeyPressed && Keyboard.IsKeyPressed(Keyboard.Key.E)) {
+                if (TextInputHandler.Characters.Contains('e') || TextInputHandler.Characters.Contains('E')) {
                     inventoryInterface.Active = !inventoryInterface.Active;
-                    inventoryKeyPressed = true;
+                    Assets.inventory.Play();
                 }
-
-                if (!Keyboard.IsKeyPressed(Keyboard.Key.E))
-                    inventoryKeyPressed = false;
 
                 float mouseDeltaX = MouseHandler.MouseX - (X - Handler.gameState.gameCameraOffset.X + 16);
                 float mouseDeltaY = MouseHandler.MouseY - (Y - Handler.gameState.gameCameraOffset.Y + 16); //add 16 to get center
@@ -146,7 +142,7 @@ namespace TAC {
                 float currentEntityAngle;
 
 
-                if (MouseHandler.LeftButton && attackCooldown.ElapsedTime.AsMilliseconds() >= attackInterval && !inventoryInterface.Active && !Handler.gameState.StorageInventoryActive) {
+                if (MouseHandler.LeftButton && attackCooldown.ElapsedTime.AsMilliseconds() >= attackInterval && !inventoryInterface.Active && !Handler.gameState.StorageInventory.Active) {
                     Assets.swish.Play();
 
                     foreach (Entity e in Handler.gameState.CurrentMap.Entities) {
@@ -158,7 +154,7 @@ namespace TAC {
                         currentEntityAngle = (float)Math.Atan2(currentEntityDeltaY, currentEntityDeltaX);
 
                         attackCooldown.Restart();
-                        if (e != this && Math.Abs(mouseAngle - currentEntityAngle) < 0.2f && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) <= InteractionRange) {
+                        if (e != this && Math.Abs(mouseAngle - currentEntityAngle) < 0.3f && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) <= InteractionRange) {
                             int damage = attackAlpha;
                             if (Hand != null) damage += Hand.Attack;
 

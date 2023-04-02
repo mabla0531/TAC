@@ -39,6 +39,8 @@ namespace TAC {
         }
 
         public void loadGame() {
+            gameState = new GameState(this);
+            Handler.gameState = gameState;
             gameState.loadGame();
             states.Push(gameState);
         }
@@ -66,6 +68,10 @@ namespace TAC {
                     
                     MouseHandler.LeftPressed = false;
                     MouseHandler.RightPressed = false;
+                    MouseHandler.WheelMove = 0;
+                    
+                    TextInputHandler.Characters.Clear();
+
                     window.DispatchEvents();
 
                     if ((Keyboard.IsKeyPressed(Keyboard.Key.RAlt) || Keyboard.IsKeyPressed(Keyboard.Key.LAlt)) && Keyboard.IsKeyPressed(Keyboard.Key.Enter) && !enterPressed) {
@@ -84,6 +90,7 @@ namespace TAC {
 
                     if (window.HasFocus())
                         tick();
+                    
                 }
 
                 window.Clear();
@@ -120,6 +127,10 @@ namespace TAC {
             window.MouseWheelScrolled += (sender, e) => {
                 if (e.Delta < 0.0) MouseHandler.WheelMove = -1;
                 if (e.Delta > 0.0) MouseHandler.WheelMove =  1;
+            };
+
+            window.TextEntered += (sender, e) => {
+                TextInputHandler.Characters.Add((int)e.Unicode.ToCharArray()[0]);
             };
 
             window.SetMouseCursor(defaultCursor);

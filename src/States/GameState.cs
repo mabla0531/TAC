@@ -7,18 +7,16 @@ using System;
 namespace TAC {
 
     class GameState : State {
-        
+        public string SaveName {get; set;}
         public Player player {get; set;}
         public List<Map> Maps {get; set;}
         public Map CurrentMap {get; set;}
         public List<DamageNumber> DamageNumbers {get; set;}
         public Vector2f gameCameraOffset;
         public bool Paused {get; set;}
-        private bool pauseKeyPressed;
         public bool StorageHovering {get; set;} = false;
-        private StorageInventory storageInventory;
-        public bool StorageInventoryActive {get; set;} = false;
-
+        public StorageInventoryInterface StorageInventory {get; set;}
+        private DialogBox dialogBox;
         private RectangleShape pauseMenuBG;
         private GaussianBlur gb;
         private Button resume;
@@ -30,8 +28,8 @@ namespace TAC {
 
         private Sprite storageIcon;
 
-
         public GameState(Game game) : base() {
+
             player = new Player(100.0f, 100.0f);
 
             Maps = new List<Map>();
@@ -41,9 +39,9 @@ namespace TAC {
             gameCameraOffset = new Vector2f(0, 0);
 
             Paused = false;
-            pauseKeyPressed = false;
 
-            storageInventory = new StorageInventory(player, null);
+            StorageInventory = new StorageInventoryInterface(player, null);
+            dialogBox = new DialogBox();
 
             pauseMenuBG = new RectangleShape(new Vector2f(276.0f, 256.0f));
             pauseMenuBG.Position = new Vector2f((Game.displayWidth / 2) - (pauseMenuBG.Size.X / 2), (Game.displayHeight / 2) - (pauseMenuBG.Size.Y));
@@ -81,6 +79,26 @@ namespace TAC {
         }
 
         public override void tick() {
+
+            if (TextInputHandler.Characters.Contains(27))
+                Paused = !Paused;
+
+            if (Paused) {
+                //tick buttons
+                resume.tick();
+                save.tick();
+                settings.tick();
+                quit.tick();
+                return;
+            }
+
+            //if (player.Health <= 0)
+                //end game
+            
+            dialogBox.tick();
+
+            if (dialogBox.Active) return;
+
             //handle all transition tile
             foreach(Transition transition in CurrentMap.Transitions) {
                 if (!player.getCollisionBounds().Intersects(new FloatRect(transition.X * 32.0f, transition.Y * 32.0f, 32.0f, 32.0f)))
@@ -97,26 +115,6 @@ namespace TAC {
                     }
                 }
             }
-
-            if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) && !pauseKeyPressed) {
-                pauseKeyPressed = true;
-                Paused = !Paused;
-            }
-
-            if (!Keyboard.IsKeyPressed(Keyboard.Key.Escape))
-                pauseKeyPressed = false;
-
-            if (Paused) {
-                //tick buttons
-                resume.tick();
-                save.tick();
-                settings.tick();
-                quit.tick();
-                return;
-            }
-
-            if (player.Health <= 0)
-                //end game
 
             CurrentMap.tick();
 
@@ -154,15 +152,23 @@ namespace TAC {
                 if (CurrentMap.Entities[i] == player)
                     continue;
 
-                if (StorageHovering && !StorageInventoryActive && MouseHandler.RightPressed && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) < player.InteractionRange) {
-                    StorageInventoryActive = true;
-                    storageInventory.Position = new Vector2f(MouseHandler.MouseX, MouseHandler.MouseY);
-                    storageInventory.entity = (StorageEntity)CurrentMap.Entities[i];
+                if (StorageHovering && !StorageInventory.Active && MouseHandler.RightPressed && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) < player.InteractionRange) {
+                    StorageInventory.Active = true;
+                    Assets.inventory.Play();
+                    StorageInventory.Position = new Vector2f(MouseHandler.MouseX, MouseHandler.MouseY);
+                    StorageInventory.entity = (StorageEntity)CurrentMap.Entities[i];
+                }
+
+                if (CurrentMap.Entities[i].Hovered && CurrentMap.Entities[i] is FriendlyMob && !dialogBox.Active && MouseHandler.RightPressed && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) < player.InteractionRange) {
+                    dialogBox.ResponseEntityType = ((FriendlyMob)CurrentMap.Entities[i]).DialogType;
+                    dialogBox.Active = true;
                 }
             }
 
-            if (!new FloatRect(storageInventory.Position, storageInventory.Size).Contains(MouseHandler.MouseX, MouseHandler.MouseY) && StorageInventoryActive && (MouseHandler.RightButton || MouseHandler.LeftButton))
-                StorageInventoryActive = false;
+            if (!new FloatRect(StorageInventory.Position, StorageInventory.Size).Contains(MouseHandler.MouseX, MouseHandler.MouseY) && StorageInventory.Active && (MouseHandler.RightButton || MouseHandler.LeftButton)) {
+                StorageInventory.Active = false;
+                Assets.inventory.Play();
+            }
 
             //Tick ground based items
             GroundItem itemToPickUp = null;
@@ -178,8 +184,7 @@ namespace TAC {
             if (itemToPickUp != null)
                 CurrentMap.Items.Remove(itemToPickUp); //Time travel would have been invented if we could remove a list member during iteration
 
-            if (StorageInventoryActive)
-                    storageInventory.tick();
+            StorageInventory.tick();
         }
 
         public override void render(RenderWindow window) {
@@ -208,6 +213,22 @@ namespace TAC {
                 damageNumber.render(window);
             }
 
+            hud.render(window);
+
+            if (StorageHovering) {
+                storageIcon.Position = new Vector2f(MouseHandler.MouseX + 16.0f, MouseHandler.MouseY + 16.0f);
+                window.Draw(storageIcon);
+            }
+
+            if (StorageInventory.Active) {
+                                                        //Because of text rendering system, if X/Y are decimal point numbers it causes text to be gross and blurry
+                StorageInventory.Position = new Vector2f((int)(StorageInventory.entity.X - gameCameraOffset.X), (int)(StorageInventory.entity.Y - gameCameraOffset.Y));
+                StorageInventory.render(window);
+            }
+
+            if (dialogBox.Active)
+                dialogBox.render(window);
+
             if (Paused) {
                 pauseMenuBG.Position = new Vector2f((Game.displayWidth / 2) - (pauseMenuBG.Size.X / 2), (Game.displayHeight / 2) - (pauseMenuBG.Size.Y));
                 gb.blurArea((int)pauseMenuBG.Position.X, (int)pauseMenuBG.Position.Y, window);
@@ -221,19 +242,6 @@ namespace TAC {
                 save.render(window);
                 settings.render(window);
                 quit.render(window);
-            }
-
-            hud.render(window);
-
-            if (StorageHovering) {
-                storageIcon.Position = new Vector2f(MouseHandler.MouseX + 16.0f, MouseHandler.MouseY + 16.0f);
-                window.Draw(storageIcon);
-            }
-
-            if (StorageInventoryActive) {
-                //                                      Because of text rendering system, if X/Y are decimal point numbers it causes text to be gross and blurry
-                storageInventory.Position = new Vector2f((int)(storageInventory.entity.X - gameCameraOffset.X), (int)(storageInventory.entity.Y - gameCameraOffset.Y));
-                storageInventory.render(window);
             }
         }
     }

@@ -250,6 +250,23 @@ namespace TAC {
                                     map.Entities.Add(hostileMob);
                                 }
 
+                                if (entity.Name == "FriendlyMob") {
+                                    FriendlyMob friendlyMob = new FriendlyMob(float.Parse(entity.Attributes[0]), float.Parse(entity.Attributes[1]));
+                                    friendlyMob.MaxHealth = int.Parse(entity.Attributes[2]);
+                                    friendlyMob.Health = int.Parse(entity.Attributes[3]);
+                                    friendlyMob.DisplayHealth = friendlyMob.Health;
+
+                                    if (entity.Subnodes.Count > 0) {
+                                        foreach (Node itemNode in entity.Subnodes) {
+                                            if (itemNode.Name != "Item")
+                                                continue;
+                                            friendlyMob.inventory.Items.Add(parseItem(itemNode.Attributes));
+                                        }
+                                    }
+
+                                    map.Entities.Add(friendlyMob);
+                                }
+
                                 if (entity.Name == "Corpse") {
                                     Corpse corpse = new Corpse(float.Parse(entity.Attributes[0]), float.Parse(entity.Attributes[1]));
                                     corpse.MaxHealth = int.Parse(entity.Attributes[2]);

@@ -38,6 +38,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Betalgo.OpenAI.GPT3": {
+              "target": "Package",
+              "version": "[6.8.0, )"
+            },
             "SFML.net": {
               "target": "Package",
               "version": "[2.5.0, )"

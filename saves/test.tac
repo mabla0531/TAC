@@ -15,6 +15,8 @@
     </Player>
     <Map Name="center">
         <Entities>
+            <HostileMob X="200" Y="900" MaxHealth="5" Health="5" />
+            <FriendlyMob X="400" Y="900" MaxHealth="5" Health="5" />
             <Corpse X="466.87518" Y="769.89685" MaxHealth="1" Health="1" />
             <GroundItem X="208.48268" Y="262.46082" Weight="2" Value="8" Name="Pickaxe" Attack="1" Defense="0" Health="0" Stamina="0" Sprite="80 96 16 16" Rarity="Common" Slot="Hand" />
             <GroundItem X="340.68005" Y="381.6582" Weight="2" Value="8" Name="Pickaxe" Attack="1" Defense="0" Health="0" Stamina="0" Sprite="80 96 16 16" Rarity="Common" Slot="Hand" />
@@ -23,10 +25,6 @@
         </Entities>
     </Map>
     <Map Name="south">
-        <Entities>
-            <Corpse X="46.87518" Y="76.89685" MaxHealth="1" Health="1" />
-            <GroundItem X="208.48268" Y="262.46082" Weight="2" Value="8" Name="Pickaxe" Attack="1" Defense="0" Health="0" Stamina="0" Sprite="80 96 16 16" Rarity="Common" Slot="Hand" />
-            <GroundItem X="340.68005" Y="381.6582" Weight="2" Value="8" Name="Pickaxe" Attack="1" Defense="0" Health="0" Stamina="0" Sprite="80 96 16 16" Rarity="Common" Slot="Hand" />
-        </Entities>
+        <Entities />
     </Map>
 </Save>

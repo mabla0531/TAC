@@ -2,17 +2,12 @@ using SFML.Graphics;
 using SFML.System;
 
 namespace TAC {
-    class PlayerInventory {
+    class PlayerInventoryInterface : InterfaceWindow {
         
         private Player player;
-        private RectangleShape inventoryBG;
-        private GaussianBlur gaussianBlur;
+        
         private Sprite currentItem;
         private int index;
-
-        private ScrollBar scrollBar;
-
-        public bool Active {get; set;}
 
         private Text itemLabel;
         private Text itemDescription;
@@ -22,17 +17,8 @@ namespace TAC {
 
         private Button equipButton, dropButton;
 
-        public PlayerInventory(Player p) {
+        public PlayerInventoryInterface(Player p) : base() {
             player = p;
-
-            inventoryBG = new RectangleShape(new Vector2f(276.0f, 256.0f));
-            inventoryBG.FillColor = new Color(36, 58, 71, 230);
-            inventoryBG.Position = new Vector2f((Game.displayWidth / 2) - (inventoryBG.Size.X / 2), (Game.displayHeight / 2) - (inventoryBG.Size.Y));
-            gaussianBlur = new GaussianBlur((int)inventoryBG.Size.X, (int)inventoryBG.Size.Y);
-
-            scrollBar = new ScrollBar(74, new Vector2f(inventoryBG.Position.X + (inventoryBG.Size.X) - 22, inventoryBG.Position.Y + 24));
-
-            Active = false;
 
             itemLabel = new Text("", Assets.defaultFont);
             itemLabel.CharacterSize = 20;
@@ -56,8 +42,8 @@ namespace TAC {
             itemHighlight.OutlineColor = new Color(128, 128, 128);
             itemHighlight.OutlineThickness = 1.0f;
 
-            equipButton = new Button("Equip", new Vector2f(inventoryBG.Position.X + inventoryBG.Size.X - 136.0f, inventoryBG.Position.Y + inventoryBG.Size.Y - 50.0f));
-            dropButton = new Button("Drop", new Vector2f(inventoryBG.Position.X + 8.0f, inventoryBG.Position.Y + inventoryBG.Size.Y - 50.0f));
+            equipButton = new Button("Equip", new Vector2f(background.Position.X + background.Size.X - 136.0f, background.Position.Y + background.Size.Y - 50.0f));
+            dropButton = new Button("Drop", new Vector2f(background.Position.X + 8.0f, background.Position.Y + background.Size.Y - 50.0f));
             
             equipButton.onClick += (sender, e) => {
                 if (player.inventory.Items.Count <= 0) //if inventory is empty, don't do anything
@@ -135,9 +121,15 @@ namespace TAC {
             };
         }
 
-        public void tick() {
+        public override void tick() {
             if (!Active) //escape clause for non active inventory
                 return;
+
+            if (TextInputHandler.Characters.Contains(9)) { //Tab key to close
+                Active = false;
+                Assets.inventory.Play();
+                return;
+            }
 
             foreach (Item i in player.inventory.Items) {
                 switch (i.ItemSlot) {
@@ -169,10 +161,8 @@ namespace TAC {
                 }
             }
 
-            if (MouseHandler.WheelMove != 0) {
+            if (MouseHandler.WheelMove != 0)
                 index -= MouseHandler.WheelMove; //mouse wheel int direction is flipped from index, so -=
-                MouseHandler.WheelMove = 0;
-            }
 
             //maintain constraints of index
             if (index < 0) index = 0;
@@ -189,22 +179,22 @@ namespace TAC {
             dropButton.tick();
         }
 
-        public void render(RenderWindow window) {
+        public override void render(RenderWindow window) {
             if (!Active) return;
 
-            inventoryBG.Position = new Vector2f((Game.displayWidth / 2) - (inventoryBG.Size.X / 2), (Game.displayHeight / 2) - (inventoryBG.Size.Y));
-            gaussianBlur.blurArea((int)inventoryBG.Position.X, (int)inventoryBG.Position.Y, window);
-            window.Draw(inventoryBG);
+            background.Position = new Vector2f((Game.displayWidth / 2) - (background.Size.X / 2), (Game.displayHeight / 2) - (background.Size.Y));
+            gaussianBlur.blurArea((int)background.Position.X, (int)background.Position.Y, window);
+            window.Draw(background);
             
-            highlight.Position = new Vector2f(inventoryBG.Position.X + 13, inventoryBG.Position.Y + 52);
+            highlight.Position = new Vector2f(background.Position.X + 13, background.Position.Y + 52);
             window.Draw(highlight);
 
-            scrollBar.Position = new Vector2f(inventoryBG.Position.X + (inventoryBG.Size.X) - 22, inventoryBG.Position.Y + 24);
+            scrollBar.Position = new Vector2f(background.Position.X + (background.Size.X) - 22, background.Position.Y + 24);
             scrollBar.render(window);
 
-            dropButton.Position = new Vector2f(inventoryBG.Position.X + 8, inventoryBG.Position.Y + inventoryBG.Size.Y - 50);
+            dropButton.Position = new Vector2f(background.Position.X + 8, background.Position.Y + background.Size.Y - 50);
             dropButton.render(window);
-            equipButton.Position = new Vector2f(inventoryBG.Position.X + inventoryBG.Size.X - 136, inventoryBG.Position.Y + inventoryBG.Size.Y - 50);
+            equipButton.Position = new Vector2f(background.Position.X + background.Size.X - 136, background.Position.Y + background.Size.Y - 50);
             equipButton.render(window);
 
             if (player.inventory.Items.Count <= 0)
@@ -220,7 +210,7 @@ namespace TAC {
             for (int i = index - 2; i <= index + 2; i++) {
                 if (i >= 0 && i < player.inventory.Items.Count) {    
                     itemLabel.DisplayedString = player.inventory.Items[i].Name;
-                    itemLabel.Position = new Vector2f(inventoryBG.Position.X + 16, inventoryBG.Position.Y + 50 + offset);
+                    itemLabel.Position = new Vector2f(background.Position.X + 16, background.Position.Y + 50 + offset);
                     itemLabel.FillColor = new Color(200, 200, 200);
                     if (player.inventory.Items[i].Equipped)
                         itemLabel.FillColor = new Color(212, 175, 55);
@@ -233,16 +223,16 @@ namespace TAC {
 
             Item item = player.inventory.Items[index];
 
-            itemHighlight.Position = new Vector2f(inventoryBG.Position.X + (inventoryBG.Size.X / 4) - (itemHighlight.Size.X / 2), inventoryBG.Position.Y + 136);
+            itemHighlight.Position = new Vector2f(background.Position.X + (background.Size.X / 4) - (itemHighlight.Size.X / 2), background.Position.Y + 136);
             window.Draw(itemHighlight);
 
             currentItem = item.Icon;
             currentItem.Scale = new Vector2f(2.0f, 2.0f);
-            currentItem.Position = new Vector2f(inventoryBG.Position.X + (inventoryBG.Size.X / 4) - (itemHighlight.Size.X / 2), inventoryBG.Position.Y + 136);
+            currentItem.Position = new Vector2f(background.Position.X + (background.Size.X / 4) - (itemHighlight.Size.X / 2), background.Position.Y + 136);
             window.Draw(currentItem);
             
             itemName.DisplayedString = item.Name;
-            itemName.Position = new Vector2f(inventoryBG.Position.X + (inventoryBG.Size.X / 4) - (itemName.GetLocalBounds().Width / 2), inventoryBG.Position.Y + 172);
+            itemName.Position = new Vector2f(background.Position.X + (background.Size.X / 4) - (itemName.GetLocalBounds().Width / 2), background.Position.Y + 172);
             itemName.OutlineColor = new Color(0, 0, 0);
             itemName.OutlineThickness = 1.0f;
             itemName.FillColor = item.ItemRarity switch {
@@ -256,7 +246,7 @@ namespace TAC {
             };
             window.Draw(itemName);
             
-            itemDescription.Position = new Vector2f(inventoryBG.Position.X + inventoryBG.Size.X - 128, inventoryBG.Position.Y + inventoryBG.Size.Y - 122);
+            itemDescription.Position = new Vector2f(background.Position.X + background.Size.X - 128, background.Position.Y + background.Size.Y - 122);
             itemDescription.DisplayedString = "Value: " + item.Value + "\nWeight:" + item.Weight;
             window.Draw(itemDescription);
         }

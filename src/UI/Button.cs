@@ -5,7 +5,7 @@ using System;
 namespace TAC {
     class Button {
 
-        public Text drawText {get; set;}
+        public Text DrawText {get; set;}
         public Vector2f Position {get; set;}
         public Vector2f Size {get; set;}
         private bool pressed, hovered;
@@ -25,13 +25,13 @@ namespace TAC {
             Position = position;
             Size = new Vector2f(128.0f, 42.0f);
 
-            drawText = new Text(text, Assets.defaultFont);
-            drawText.Position = new Vector2f(Position.X + 12, Position.Y + 8);
-            drawText.FillColor = new Color(200, 200, 200);
-            drawText.OutlineColor = Color.Black;
-            drawText.OutlineThickness = 1.0f;
-            drawText.LetterSpacing = 1;
-            drawText.CharacterSize = 20;
+            DrawText = new Text(text, Assets.defaultFont);
+            DrawText.Position = new Vector2f(Position.X + 12, Position.Y + 8);
+            DrawText.FillColor = new Color(200, 200, 200);
+            DrawText.OutlineColor = Color.Black;
+            DrawText.OutlineThickness = 1.0f;
+            DrawText.LetterSpacing = 1;
+            DrawText.CharacterSize = 20;
 
             buttonRect = new RectangleShape(Size);
             buttonRect.Position = position;
@@ -79,12 +79,12 @@ namespace TAC {
         public void render(RenderWindow window) {            
             
             buttonRect.Position = Position;
-            drawText.Position = new Vector2f(Position.X + 12, Position.Y + 8);
+            DrawText.Position = new Vector2f(Position.X + 12, Position.Y + 8);
             if (translucent)
                 gb.blurArea((int)Position.X, (int)Position.Y, window);
 
             window.Draw(buttonRect);
-            window.Draw(drawText);
+            window.Draw(DrawText);
         }
     }
 }

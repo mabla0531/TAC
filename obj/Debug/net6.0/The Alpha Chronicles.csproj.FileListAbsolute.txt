@@ -154,3 +154,14 @@ C:\Users\mabla\Documents\TAC\obj\Debug\net6.0\refint\The Alpha Chronicles.dll
 C:\Users\mabla\Documents\TAC\obj\Debug\net6.0\The Alpha Chronicles.pdb
 C:\Users\mabla\Documents\TAC\obj\Debug\net6.0\The Alpha Chronicles.genruntimeconfig.cache
 C:\Users\mabla\Documents\TAC\obj\Debug\net6.0\ref\The Alpha Chronicles.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\OpenAI.GPT3.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.Http.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.Logging.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.Options.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.Primitives.dll

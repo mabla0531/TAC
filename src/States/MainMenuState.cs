@@ -12,7 +12,7 @@ namespace TAC {
         private Sprite logo;
 
         private Game game;
-        
+
         public MainMenuState(Game game) {
             this.game = game;
 
@@ -41,7 +41,6 @@ namespace TAC {
             menuArt.Scale = new Vector2f((float)Game.displayWidth / 1920.0f, (float)Game.displayHeight / 1080.0f); //scale from 1920x1080 to game height
             logo = new Sprite(Assets.logo, new IntRect(new Vector2i(0, 0), (Vector2i)Assets.logo.Size));
             logo.Position = new Vector2f((Game.displayWidth / 2) - (Assets.logo.Size.X / 2), 64.0f);
-
         }
 
         public override void tick() {
@@ -51,7 +50,6 @@ namespace TAC {
             exitButton.tick();
             menuArt.Scale = new Vector2f((float)Game.displayWidth / 1920.0f, (float)Game.displayHeight / 1080.0f); //scale from 1920x1080 to game height
             logo.Position = new Vector2f((Game.displayWidth / 2) - (Assets.logo.Size.X / 2), 64.0f);
-
         }
 
         public override void render(RenderWindow window) {
