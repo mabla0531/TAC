@@ -165,3 +165,10 @@ C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstr
 C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.Options.dll
 C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll
 C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Microsoft.Extensions.Primitives.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Google.Protobuf.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\MethodBoundaryAspect.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Protobuf.Text.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Serilog.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Serilog.Sinks.Console.dll
+C:\Users\mabla\Documents\TAC\bin\Debug\net6.0\Tensorflow.Binding.dll

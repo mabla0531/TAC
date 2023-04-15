@@ -1,0 +1,12 @@
+prompt_0_How can I help you today?_[1,2,3]
+response_1_I'd like to see what you are selling._shop
+response_2_Where do you get your merchandise from?_4
+response_3_I'll be on my way now._10
+prompt_4_I gather my merchandise from many areas of the world and many different people._[5,6,7]
+response_5_Are the areas dangerous?_8
+response_6_Are the people dangerous?_9
+response_7_Interesting._0
+prompt_8_Mostly. The world itself is dangerous, and the areas make up the world, so you can understand why._[6,7]
+prompt_9_Not really. Most people I do business with are nice. Except for Galuglians. They're very mean._[5,7]
+prompt_10_Have a nice day!_[11]
+response_11_[Leave]_exit

@@ -42,9 +42,17 @@
               "target": "Package",
               "version": "[6.8.0, )"
             },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
             "SFML.net": {
               "target": "Package",
               "version": "[2.5.0, )"
+            },
+            "TensorFlow.NET": {
+              "target": "Package",
+              "version": "[0.100.4, )"
             }
           },
           "imports": [

@@ -1,5 +1,9 @@
 using SFML.Graphics;
 using SFML.Audio;
+using System.Text.Json;
+using System.IO;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace TAC {
 
@@ -30,9 +34,13 @@ namespace TAC {
         public static Sound click;
         public static Sound hover;
         public static Sound inventory;
+        public static Sound text;
 
         //Font
         public static Font defaultFont;
+
+        //Dialog
+        public static DialogTree merchant;
 
         public static void updateVolume(float volume) {
             slice.Volume     = volume;
@@ -42,9 +50,14 @@ namespace TAC {
             click.Volume     = volume;
             hover.Volume     = volume;
             inventory.Volume = volume;
+            text.Volume      = volume;
         }
 
-        public static void init() { //bit schewpid, init()? 
+        public static void init() { //bit schewpid, init()?
+                        
+            merchant = new DialogTree("res/dialog/merchant.dlg");
+            
+
             terrain   = new Texture("res/textures/terrain.png");
             player    = new Texture("res/textures/player.png");
             enemy     = new Texture("res/textures/enemy.png");
@@ -74,6 +87,7 @@ namespace TAC {
             click     = new Sound(new SoundBuffer("res/sounds/zipclick.wav"));
             hover     = new Sound(new SoundBuffer("res/sounds/hover.wav"));
             inventory = new Sound(new SoundBuffer("res/sounds/leather_inventory.wav"));
+            text      = new Sound(new SoundBuffer("res/sounds/text.wav"));
             slice.Volume     = SettingsState.Volume * 100.0f;
             walk.Volume      = SettingsState.Volume * 100.0f;
             swish.Volume     = SettingsState.Volume * 100.0f;
@@ -81,6 +95,7 @@ namespace TAC {
             click.Volume     = SettingsState.Volume * 100.0f;
             hover.Volume     = SettingsState.Volume * 100.0f;
             inventory.Volume = SettingsState.Volume * 100.0f;
+            text.Volume      = SettingsState.Volume * 100.0f;
 
             defaultFont = new Font("res/fonts/default.ttf");
         }
@@ -93,6 +108,7 @@ namespace TAC {
             click.SoundBuffer.Dispose();
             hover.SoundBuffer.Dispose();
             inventory.SoundBuffer.Dispose();
+            text.SoundBuffer.Dispose();
             slice.Dispose();
             walk.Dispose();
             swish.Dispose();
@@ -100,6 +116,7 @@ namespace TAC {
             click.Dispose();
             hover.Dispose();
             inventory.Dispose();
+            text.Dispose();
         }
     }
 }

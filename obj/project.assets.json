@@ -252,6 +252,36 @@
           }
         }
       },
+      "Fody/6.0.5": {
+        "type": "package",
+        "build": {
+          "build/_._": {}
+        }
+      },
+      "Google.Protobuf/3.19.6": {
+        "type": "package",
+        "compile": {
+          "lib/net5.0/Google.Protobuf.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/Google.Protobuf.dll": {}
+        }
+      },
+      "MethodBoundaryAspect.Fody/2.0.148": {
+        "type": "package",
+        "dependencies": {
+          "Fody": "6.0.5"
+        },
+        "compile": {
+          "lib/netstandard2.0/MethodBoundaryAspect.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/MethodBoundaryAspect.dll": {}
+        },
+        "build": {
+          "build/_._": {}
+        }
+      },
       "Microsoft.Extensions.Configuration.Abstractions/6.0.0": {
         "type": "package",
         "dependencies": {
@@ -391,6 +421,48 @@
           "buildTransitive/netcoreapp3.1/_._": {}
         }
       },
+      "Newtonsoft.Json/13.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Protobuf.Text/0.6.1": {
+        "type": "package",
+        "dependencies": {
+          "Google.Protobuf": "3.19.6"
+        },
+        "compile": {
+          "lib/net6.0/Protobuf.Text.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Protobuf.Text.dll": {}
+        }
+      },
+      "Serilog/2.10.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.1/Serilog.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/Serilog.dll": {}
+        }
+      },
+      "Serilog.Sinks.Console/4.1.0": {
+        "type": "package",
+        "dependencies": {
+          "Serilog": "2.10.0"
+        },
+        "compile": {
+          "lib/net5.0/Serilog.Sinks.Console.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/Serilog.Sinks.Console.dll": {}
+        }
+      },
       "SFML.Audio/2.5.0": {
         "type": "package",
         "dependencies": {
@@ -480,6 +552,21 @@
         "build": {
           "buildTransitive/netcoreapp3.1/_._": {}
         }
+      },
+      "TensorFlow.NET/0.100.4": {
+        "type": "package",
+        "dependencies": {
+          "MethodBoundaryAspect.Fody": "2.0.148",
+          "Newtonsoft.Json": "13.0.2",
+          "Protobuf.Text": "0.6.1",
+          "Serilog.Sinks.Console": "4.1.0"
+        },
+        "compile": {
+          "lib/net6.0/Tensorflow.Binding.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Tensorflow.Binding.dll": {}
+        }
       }
     }
   },
@@ -568,6 +655,76 @@
         "runtimes/win-x86/native/csfml-System.dll",
         "runtimes/win-x86/native/csfml-Window.dll",
         "runtimes/win-x86/native/openal32.dll"
+      ]
+    },
+    "Fody/6.0.5": {
+      "sha512": "xfz4NwIIPs2xtfvpPlXz49cHYPeWBl/bnvlpW6OSpxKFAujAm7vLQ8Ma7aX3GYVjc/czn5+58QNUnDyb4gxiKA==",
+      "type": "package",
+      "path": "fody/6.0.5",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "build/Fody.targets",
+        "fody.6.0.5.nupkg.sha512",
+        "fody.nuspec",
+        "netclassictask/Fody.dll",
+        "netclassictask/FodyCommon.dll",
+        "netclassictask/FodyHelpers.dll",
+        "netclassictask/FodyIsolated.dll",
+        "netclassictask/Mono.Cecil.Pdb.dll",
+        "netclassictask/Mono.Cecil.Pdb.pdb",
+        "netclassictask/Mono.Cecil.Rocks.dll",
+        "netclassictask/Mono.Cecil.Rocks.pdb",
+        "netclassictask/Mono.Cecil.dll",
+        "netclassictask/Mono.Cecil.pdb",
+        "netstandardtask/Fody.dll",
+        "netstandardtask/FodyCommon.dll",
+        "netstandardtask/FodyHelpers.dll",
+        "netstandardtask/FodyIsolated.dll",
+        "netstandardtask/Mono.Cecil.Pdb.dll",
+        "netstandardtask/Mono.Cecil.Pdb.pdb",
+        "netstandardtask/Mono.Cecil.Rocks.dll",
+        "netstandardtask/Mono.Cecil.Rocks.pdb",
+        "netstandardtask/Mono.Cecil.dll",
+        "netstandardtask/Mono.Cecil.pdb"
+      ]
+    },
+    "Google.Protobuf/3.19.6": {
+      "sha512": "I+gb51P2GrzyXkUD9y60pMzA6ox4d3ByvXCm5OYZsAii2/fs5S5cuKiEIoaseEv26cdIAnKL4W7W5W0QO0Iobw==",
+      "type": "package",
+      "path": "google.protobuf/3.19.6",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "google.protobuf.3.19.6.nupkg.sha512",
+        "google.protobuf.nuspec",
+        "lib/net45/Google.Protobuf.dll",
+        "lib/net45/Google.Protobuf.pdb",
+        "lib/net45/Google.Protobuf.xml",
+        "lib/net5.0/Google.Protobuf.dll",
+        "lib/net5.0/Google.Protobuf.pdb",
+        "lib/net5.0/Google.Protobuf.xml",
+        "lib/netstandard1.1/Google.Protobuf.dll",
+        "lib/netstandard1.1/Google.Protobuf.pdb",
+        "lib/netstandard1.1/Google.Protobuf.xml",
+        "lib/netstandard2.0/Google.Protobuf.dll",
+        "lib/netstandard2.0/Google.Protobuf.pdb",
+        "lib/netstandard2.0/Google.Protobuf.xml"
+      ]
+    },
+    "MethodBoundaryAspect.Fody/2.0.148": {
+      "sha512": "QFZOs5SRehBbRYmuPvdsgr3PhqkoERO9YT0jxW4JzmWIZmk2nlMz4uokz+HiWtK9n+2e0eAZ0pX7om+yMbserw==",
+      "type": "package",
+      "path": "methodboundaryaspect.fody/2.0.148",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "build/MethodBoundaryAspect.Fody.props",
+        "lib/net462/MethodBoundaryAspect.dll",
+        "lib/netstandard2.0/MethodBoundaryAspect.dll",
+        "methodboundaryaspect.fody.2.0.148.nupkg.sha512",
+        "methodboundaryaspect.fody.nuspec",
+        "weaver/MethodBoundaryAspect.Fody.dll"
       ]
     },
     "Microsoft.Extensions.Configuration.Abstractions/6.0.0": {
@@ -815,6 +972,93 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Newtonsoft.Json/13.0.3": {
+      "sha512": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
+      "type": "package",
+      "path": "newtonsoft.json/13.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.md",
+        "README.md",
+        "lib/net20/Newtonsoft.Json.dll",
+        "lib/net20/Newtonsoft.Json.xml",
+        "lib/net35/Newtonsoft.Json.dll",
+        "lib/net35/Newtonsoft.Json.xml",
+        "lib/net40/Newtonsoft.Json.dll",
+        "lib/net40/Newtonsoft.Json.xml",
+        "lib/net45/Newtonsoft.Json.dll",
+        "lib/net45/Newtonsoft.Json.xml",
+        "lib/net6.0/Newtonsoft.Json.dll",
+        "lib/net6.0/Newtonsoft.Json.xml",
+        "lib/netstandard1.0/Newtonsoft.Json.dll",
+        "lib/netstandard1.0/Newtonsoft.Json.xml",
+        "lib/netstandard1.3/Newtonsoft.Json.dll",
+        "lib/netstandard1.3/Newtonsoft.Json.xml",
+        "lib/netstandard2.0/Newtonsoft.Json.dll",
+        "lib/netstandard2.0/Newtonsoft.Json.xml",
+        "newtonsoft.json.13.0.3.nupkg.sha512",
+        "newtonsoft.json.nuspec",
+        "packageIcon.png"
+      ]
+    },
+    "Protobuf.Text/0.6.1": {
+      "sha512": "ML+gaLKlb+GctQxOci3T86Xmv1hD2US4cs/bjHjhD7oj386NSQ5SRbihQUyMC5gqA+5Y0ShCpoypdl+XwalUAA==",
+      "type": "package",
+      "path": "protobuf.text/0.6.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net6.0/Protobuf.Text.dll",
+        "lib/netstandard2.0/Protobuf.Text.dll",
+        "protobuf.text.0.6.1.nupkg.sha512",
+        "protobuf.text.nuspec"
+      ]
+    },
+    "Serilog/2.10.0": {
+      "sha512": "+QX0hmf37a0/OZLxM3wL7V6/ADvC1XihXN4Kq/p6d8lCPfgkRdiuhbWlMaFjR9Av0dy5F0+MBeDmDdRZN/YwQA==",
+      "type": "package",
+      "path": "serilog/2.10.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "lib/net45/Serilog.dll",
+        "lib/net45/Serilog.xml",
+        "lib/net46/Serilog.dll",
+        "lib/net46/Serilog.xml",
+        "lib/netstandard1.0/Serilog.dll",
+        "lib/netstandard1.0/Serilog.xml",
+        "lib/netstandard1.3/Serilog.dll",
+        "lib/netstandard1.3/Serilog.xml",
+        "lib/netstandard2.0/Serilog.dll",
+        "lib/netstandard2.0/Serilog.xml",
+        "lib/netstandard2.1/Serilog.dll",
+        "lib/netstandard2.1/Serilog.xml",
+        "serilog.2.10.0.nupkg.sha512",
+        "serilog.nuspec"
+      ]
+    },
+    "Serilog.Sinks.Console/4.1.0": {
+      "sha512": "K6N5q+5fetjnJPvCmkWOpJ/V8IEIoMIB1s86OzBrbxwTyHxdx3pmz4H+8+O/Dc/ftUX12DM1aynx/dDowkwzqg==",
+      "type": "package",
+      "path": "serilog.sinks.console/4.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "lib/net45/Serilog.Sinks.Console.dll",
+        "lib/net45/Serilog.Sinks.Console.xml",
+        "lib/net5.0/Serilog.Sinks.Console.dll",
+        "lib/net5.0/Serilog.Sinks.Console.xml",
+        "lib/netstandard1.3/Serilog.Sinks.Console.dll",
+        "lib/netstandard1.3/Serilog.Sinks.Console.xml",
+        "lib/netstandard2.0/Serilog.Sinks.Console.dll",
+        "lib/netstandard2.0/Serilog.Sinks.Console.xml",
+        "serilog.sinks.console.4.1.0.nupkg.sha512",
+        "serilog.sinks.console.nuspec"
+      ]
+    },
     "SFML.Audio/2.5.0": {
       "sha512": "M5EIksRefT3nsLT32oEpESStsnlixR+YjKS6fUMl+vDQ3gdMaV4jc84pg3kbfM9w4RYKAyH6OWV4bzDU5FNZyA==",
       "type": "package",
@@ -927,12 +1171,30 @@
         "system.runtime.compilerservices.unsafe.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "TensorFlow.NET/0.100.4": {
+      "sha512": "LypP9ahbQMnTVMasuzgoMAQKomrTVPzOFohRf8ix4wReii5kp08no0ZgCBe/NWQZI/8Mgtr3jxqGA/YDBvpzMQ==",
+      "type": "package",
+      "path": "tensorflow.net/0.100.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "lib/net6.0/Tensorflow.Binding.dll",
+        "lib/net6.0/Tensorflow.Binding.xml",
+        "lib/netstandard2.0/Tensorflow.Binding.dll",
+        "lib/netstandard2.0/Tensorflow.Binding.xml",
+        "tensorflow.net.0.100.4.nupkg.sha512",
+        "tensorflow.net.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
       "Betalgo.OpenAI.GPT3 >= 6.8.0",
-      "SFML.net >= 2.5.0"
+      "Newtonsoft.Json >= 13.0.3",
+      "SFML.net >= 2.5.0",
+      "TensorFlow.NET >= 0.100.4"
     ]
   },
   "packageFolders": {
@@ -976,9 +1238,17 @@
             "target": "Package",
             "version": "[6.8.0, )"
           },
+          "Newtonsoft.Json": {
+            "target": "Package",
+            "version": "[13.0.3, )"
+          },
           "SFML.net": {
             "target": "Package",
             "version": "[2.5.0, )"
+          },
+          "TensorFlow.NET": {
+            "target": "Package",
+            "version": "[0.100.4, )"
           }
         },
         "imports": [

@@ -1,5 +1,6 @@
 using SFML.Graphics;
 using SFML.System;
+using System;
 
 namespace TAC {
     abstract class Entity {
@@ -43,6 +44,22 @@ namespace TAC {
 
             render += (RenderWindow window) => {
                 EntitySprite.Position = new Vector2f((int)(X - Handler.gameState.gameCameraOffset.X), (int)(Y - Handler.gameState.gameCameraOffset.Y));
+                VertexArray shadow = new VertexArray(PrimitiveType.Quads, 4);
+
+                byte shadowTransparency = (byte)(128 - System.Math.Abs(128.0f * Handler.gameState.TimeofDay));
+                if (Math.Abs(Handler.gameState.TimeofDay) > 1.0f)
+                    shadowTransparency = 0;
+
+                shadow[0] = new Vertex(new Vector2f(Handler.gameState.TimeofDay * EntitySprite.TextureRect.Width, 0.0f), new Color(0, 0, 0, shadowTransparency), new Vector2f(EntitySprite.TextureRect.Left, EntitySprite.TextureRect.Top));
+                shadow[1] = new Vertex(new Vector2f(EntitySprite.TextureRect.Width + (Handler.gameState.TimeofDay * EntitySprite.TextureRect.Width), 0.0f), new Color(0, 0, 0,shadowTransparency), new Vector2f(EntitySprite.TextureRect.Left + EntitySprite.TextureRect.Width, EntitySprite.TextureRect.Top));
+                shadow[2] = new Vertex(new Vector2f(EntitySprite.TextureRect.Width, EntitySprite.TextureRect.Height), new Color(0, 0, 0, shadowTransparency), new Vector2f(EntitySprite.TextureRect.Left + EntitySprite.TextureRect.Width, EntitySprite.TextureRect.Top + EntitySprite.TextureRect.Height));
+                shadow[3] = new Vertex(new Vector2f(0.0f, EntitySprite.TextureRect.Height), new Color(0, 0, 0, shadowTransparency), new Vector2f(EntitySprite.TextureRect.Left, EntitySprite.TextureRect.Top + EntitySprite.TextureRect.Height));
+                
+                RenderStates renderStates = new RenderStates(EntitySprite.Texture);
+                
+                renderStates.Transform.Translate(EntitySprite.Position);
+                shadow.Draw(window, renderStates);
+
                 window.Draw(EntitySprite);
             };
         }

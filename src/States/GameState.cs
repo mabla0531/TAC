@@ -1,6 +1,5 @@
 using SFML.Graphics;
 using SFML.System;
-using SFML.Window;
 using System.Collections.Generic;
 using System;
 
@@ -13,9 +12,14 @@ namespace TAC {
         public Map CurrentMap {get; set;}
         public List<DamageNumber> DamageNumbers {get; set;}
         public Vector2f gameCameraOffset;
+        public float TimeofDay {get; set;}
+        private Clock timeClock;
+        private Clock testClock;
+        public RectangleShape LightLevel {get; set;}
         public bool Paused {get; set;}
         public bool StorageHovering {get; set;} = false;
         public StorageInventoryInterface StorageInventory {get; set;}
+        public PlayerInventoryInterface PlayerInventory {get; set;}
         private DialogBox dialogBox;
         private RectangleShape pauseMenuBG;
         private GaussianBlur gb;
@@ -38,8 +42,17 @@ namespace TAC {
 
             gameCameraOffset = new Vector2f(0, 0);
 
+            LightLevel = new RectangleShape(new Vector2f(Game.displayWidth, Game.displayHeight));
+            LightLevel.Position = new Vector2f(0.0f, 0.0f);
+            LightLevel.FillColor = new Color(0, 0, 0, 0);
+
+            TimeofDay = 0.0f;
+            timeClock = new Clock();
+            testClock = new Clock();
+
             Paused = false;
 
+            PlayerInventory = new PlayerInventoryInterface(player);
             StorageInventory = new StorageInventoryInterface(player, null);
             dialogBox = new DialogBox();
 
@@ -48,13 +61,13 @@ namespace TAC {
             pauseMenuBG.FillColor = new Color(36, 58, 71, 230);
             gb = new GaussianBlur((int)pauseMenuBG.Size.X, (int)pauseMenuBG.Size.Y);
 
-            resume   = new Button("Resume",   new Vector2f(pauseMenuBG.Position.X + (pauseMenuBG.Size.X / 2) - 64.0f, pauseMenuBG.Position.Y + 16.0f));
+            resume   = new Button("Resume",    new Vector2f(pauseMenuBG.Position.X + (pauseMenuBG.Size.X / 2) - 64.0f, pauseMenuBG.Position.Y + 16.0f));
             save     = new Button("Save",     new Vector2f(pauseMenuBG.Position.X + (pauseMenuBG.Size.X / 2) - 64.0f, pauseMenuBG.Position.Y + 75.0f));
             settings = new Button("Settings", new Vector2f(pauseMenuBG.Position.X + (pauseMenuBG.Size.X / 2) - 64.0f, pauseMenuBG.Position.Y + 133.0f));
             quit     = new Button("Quit",     new Vector2f(pauseMenuBG.Position.X + (pauseMenuBG.Size.X / 2) - 64.0f, pauseMenuBG.Position.Y + 192.0f));
 
             resume.onClick   += (sender, e) => { Paused = false; };
-            save.onClick     += (sender, e) => { saveGame(); };
+            save.onClick     += (sender, e) =>{ saveGame(); };
             settings.onClick += (sender, e) => { game.showSettings(); };
             quit.onClick     += (sender, e) => {
                 Paused = false;
@@ -96,8 +109,10 @@ namespace TAC {
                 //end game
             
             dialogBox.tick();
+            PlayerInventory.tick();
+            StorageInventory.tick();
 
-            if (dialogBox.Active) return;
+            if (dialogBox.Active || PlayerInventory.Active || StorageInventory.Active) return;
 
             //handle all transition tile
             foreach(Transition transition in CurrentMap.Transitions) {
@@ -127,6 +142,15 @@ namespace TAC {
             if ((CurrentMap.Width * 32.0f) < Game.displayWidth) gameCameraOffset.X = ((CurrentMap.Width * 32.0f) / 2) - (Game.displayWidth / 2);
             if ((CurrentMap.Height * 32.0f) < Game.displayHeight) gameCameraOffset.Y = ((CurrentMap.Height * 32.0f) / 2) - (Game.displayHeight / 2);
 
+            //Do sun cycle, days last ~20 minutes
+            if (timeClock.ElapsedTime.AsMilliseconds() >= 1000) {
+                TimeofDay += 0.00125f;
+                timeClock.Restart();
+            }
+
+            if (TimeofDay >= 1.5f)
+                TimeofDay = -1.5f;
+
             //Sort entities by Y value, to give 3D effect
             CurrentMap.Entities.Sort(Comparer<Entity>.Create((e1, e2) => e1.Y.CompareTo(e2.Y)));
 
@@ -143,12 +167,12 @@ namespace TAC {
 
                 CurrentMap.Entities[i].tick();
 
+                //Interaction
                 float currentEntityDeltaX = CurrentMap.Entities[i].X - player.X;
                 float currentEntityDeltaY = CurrentMap.Entities[i].Y - player.Y;
                 if (CurrentMap.Entities[i].Hovered && CurrentMap.Entities[i] is StorageEntity && CurrentMap.Entities[i].inventory.Items.Count > 0 && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) < player.InteractionRange)
                     StorageHovering = true;
 
-                //Interaction
                 if (CurrentMap.Entities[i] == player)
                     continue;
 
@@ -160,13 +184,12 @@ namespace TAC {
                 }
 
                 if (CurrentMap.Entities[i].Hovered && CurrentMap.Entities[i] is FriendlyMob && !dialogBox.Active && MouseHandler.RightPressed && Math.Sqrt((currentEntityDeltaX * currentEntityDeltaX) + (currentEntityDeltaY * currentEntityDeltaY)) < player.InteractionRange) {
-                    dialogBox.ResponseEntityType = ((FriendlyMob)CurrentMap.Entities[i]).DialogType;
                     dialogBox.Active = true;
                 }
             }
 
-            if (!new FloatRect(StorageInventory.Position, StorageInventory.Size).Contains(MouseHandler.MouseX, MouseHandler.MouseY) && StorageInventory.Active && (MouseHandler.RightButton || MouseHandler.LeftButton)) {
-                StorageInventory.Active = false;
+            if (TextInputHandler.Characters.Contains('e') || TextInputHandler.Characters.Contains('E')) {
+                PlayerInventory.Active = !PlayerInventory.Active;
                 Assets.inventory.Play();
             }
 
@@ -183,8 +206,6 @@ namespace TAC {
 
             if (itemToPickUp != null)
                 CurrentMap.Items.Remove(itemToPickUp); //Time travel would have been invented if we could remove a list member during iteration
-
-            StorageInventory.tick();
         }
 
         public override void render(RenderWindow window) {
@@ -198,6 +219,19 @@ namespace TAC {
             foreach (Entity e in CurrentMap.Entities) {
                 e.render(window);
             }
+
+            byte lightLevel = (byte)Math.Abs(192.0f * TimeofDay);
+            byte sunset = (byte)Math.Abs(255 * Math.Abs(Math.Abs(Math.Abs(TimeofDay) - 0.5f) - 0.5f));
+            //0.0, 0
+            //0.5, 255
+            //1.0, 0
+            if (Math.Abs(TimeofDay) > 1.0f) {
+                lightLevel = 192;
+                sunset = 0;
+            }
+
+            LightLevel.FillColor = new Color(sunset, 0, 0, lightLevel);
+            window.Draw(LightLevel);
 
             foreach (GroundItem g in CurrentMap.Items) {
                 g.renderTooltip(window); //Put tooltips above everything else so character doesn't walk over it
@@ -220,11 +254,8 @@ namespace TAC {
                 window.Draw(storageIcon);
             }
 
-            if (StorageInventory.Active) {
-                                                        //Because of text rendering system, if X/Y are decimal point numbers it causes text to be gross and blurry
-                StorageInventory.Position = new Vector2f((int)(StorageInventory.entity.X - gameCameraOffset.X), (int)(StorageInventory.entity.Y - gameCameraOffset.Y));
-                StorageInventory.render(window);
-            }
+            PlayerInventory.render(window);
+            StorageInventory.render(window);
 
             if (dialogBox.Active)
                 dialogBox.render(window);

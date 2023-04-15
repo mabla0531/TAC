@@ -19,9 +19,6 @@ namespace TAC {
 
         private RectangleShape cooldownBarBackground, cooldownBar;
 
-        //Inventory
-        private PlayerInventoryInterface inventoryInterface;
-
         public Item Head {get; set;}
         public Item Chest {get; set;}
         public Item Legs {get; set;}
@@ -72,15 +69,8 @@ namespace TAC {
             cooldownBar = new RectangleShape(new Vector2f(16, 2));
             cooldownBar.FillColor = new Color(32, 32, 32);
 
-            inventoryInterface = new PlayerInventoryInterface(this);
-
             tick += () => {
                 float mouseAngle;
-
-                if (TextInputHandler.Characters.Contains('e') || TextInputHandler.Characters.Contains('E')) {
-                    inventoryInterface.Active = !inventoryInterface.Active;
-                    Assets.inventory.Play();
-                }
 
                 float mouseDeltaX = MouseHandler.MouseX - (X - Handler.gameState.gameCameraOffset.X + 16);
                 float mouseDeltaY = MouseHandler.MouseY - (Y - Handler.gameState.gameCameraOffset.Y + 16); //add 16 to get center
@@ -141,8 +131,8 @@ namespace TAC {
                 float currentEntityDeltaX, currentEntityDeltaY;
                 float currentEntityAngle;
 
-
-                if (MouseHandler.LeftButton && attackCooldown.ElapsedTime.AsMilliseconds() >= attackInterval && !inventoryInterface.Active && !Handler.gameState.StorageInventory.Active) {
+                //do attacking
+                if (MouseHandler.LeftButton && attackCooldown.ElapsedTime.AsMilliseconds() >= attackInterval && !Handler.gameState.PlayerInventory.Active && !Handler.gameState.StorageInventory.Active) {
                     Assets.swish.Play();
 
                     foreach (Entity e in Handler.gameState.CurrentMap.Entities) {
@@ -170,8 +160,6 @@ namespace TAC {
                 cooldownBar.FillColor = new Color(32, 32, 32);
                 if (elapsed >= attackInterval)
                     cooldownBar.FillColor = new Color(200, 200, 200);
-
-                inventoryInterface.tick();
             };
 
             render += (RenderWindow window) => {
@@ -182,8 +170,6 @@ namespace TAC {
                 cooldownBar.Position = new Vector2f((int)(X - Handler.gameState.gameCameraOffset.X + 9), (int)(Y - Handler.gameState.gameCameraOffset.Y + 35));
                 window.Draw(cooldownBarBackground);
                 window.Draw(cooldownBar);
-
-                inventoryInterface.render(window);
             };
         }
 

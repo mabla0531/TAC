@@ -73,7 +73,7 @@ namespace TAC {
         public override void tick() {
             if (!Active) return;
 
-            if (TextInputHandler.Characters.Contains(9)) { //Tab key to close
+            if ((!new FloatRect(Position, Size).Contains(MouseHandler.MouseX, MouseHandler.MouseY) && (MouseHandler.RightButton || MouseHandler.LeftButton)) || TextInputHandler.Characters.Contains(9)) { //Tab key to close
                 Active = false;
                 Assets.inventory.Play();
                 return;
@@ -97,6 +97,9 @@ namespace TAC {
         }
 
         public override void render(RenderWindow window) {
+            if (!Active) return;
+            
+            Position = new Vector2f((int)(entity.X - Handler.gameState.gameCameraOffset.X), (int)(entity.Y - Handler.gameState.gameCameraOffset.Y));
 
             background.Position = Position;
             gaussianBlur.blurArea((int)background.Position.X, (int)background.Position.Y, window);
